@@ -8,7 +8,7 @@ let selectedKid = {
     avatar: '❓'
 };
 
-const kidAvatars = {
+const defaultKidAvatar = {
     Fionoa: '🦊',
     Dhruv: '🐯',
     Kate: '🦉',
@@ -170,14 +170,14 @@ function startFlow(flowType) {
     window.scrollTo(0,0);
 }
 
-function selectKid(name, buttonEl = null) {
-    selectedKid = {
-        name,
-        avatar: kidAvatars[name] || '🙂'
-    };
+function selectKidName(name, buttonEl = null) {
+    selectedKid.name = name;
+    if (selectedKid.avatar === '❓' || !selectedKid.avatar) {
+        selectedKid.avatar = defaultKidAvatar[name] || '🙂';
+    }
 
     if (buttonEl) {
-        document.querySelectorAll('.kid-option').forEach(el => el.classList.remove('selected', 'selected-green', 'selected-red'));
+        document.querySelectorAll('.name-option').forEach(el => el.classList.remove('selected', 'selected-green', 'selected-red'));
         buttonEl.classList.add('selected');
     }
 
@@ -188,6 +188,25 @@ function selectKid(name, buttonEl = null) {
     const cardTitle = document.getElementById('journey-card-title');
     if (cardTitle) {
         cardTitle.innerText = `The Journey of ${selectedKid.name}`;
+    }
+
+    const navAvatar = document.getElementById('flow-avatar');
+    if (navAvatar && selectedKid.avatar) {
+        navAvatar.innerText = selectedKid.avatar;
+    }
+}
+
+function selectKidAvatar(avatar, buttonEl = null) {
+    selectedKid.avatar = avatar;
+
+    if (buttonEl) {
+        document.querySelectorAll('.avatar-option').forEach(el => el.classList.remove('selected', 'selected-green', 'selected-red'));
+        buttonEl.classList.add('selected-green');
+    }
+
+    const navAvatar = document.getElementById('flow-avatar');
+    if (navAvatar) {
+        navAvatar.innerText = selectedKid.avatar;
     }
 }
 
