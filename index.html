@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Algebra of Wealth: Interactive Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.0"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans antialiased">
+
+    <div id="landing-page" class="min-h-screen flex flex-col items-center justify-center p-4 bg-brand-900 text-white">
+        <div class="max-w-4xl text-center space-y-8">
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight">The Algebra of Wealth</h1>
+            <p class="text-xl md:text-2xl text-brand-100 font-light">Choose your path to master the mathematics of financial security.</p>
+
+            <div class="max-w-4xl mx-auto text-left bg-white/10 border border-brand-500/40 rounded-2xl p-5 space-y-5">
+                <p class="text-sm uppercase tracking-wide text-brand-100/80">Build Your Story Hero</p>
+
+                <div>
+                    <p class="text-xs uppercase tracking-wide text-brand-100/70 mb-2">1) Pick Name</p>
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+                        <button class="choice-card name-option text-gray-900" onclick="selectKidName('Fionoa', this)"><span class="kid-name">Fionoa</span></button>
+                        <button class="choice-card name-option text-gray-900" onclick="selectKidName('Dhruv', this)"><span class="kid-name">Dhruv</span></button>
+                        <button class="choice-card name-option text-gray-900" onclick="selectKidName('Kate', this)"><span class="kid-name">Kate</span></button>
+                        <button class="choice-card name-option text-gray-900" onclick="selectKidName('Taylor', this)"><span class="kid-name">Taylor</span></button>
+                        <button class="choice-card name-option text-gray-900" onclick="selectKidName('Mehr', this)"><span class="kid-name">Mehr</span></button>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-xs uppercase tracking-wide text-brand-100/70 mb-2">2) Pick Avatar</p>
+                    <div class="grid grid-cols-4 md:grid-cols-8 gap-2 mb-3">
+                        <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🦊', this)"><span class="kid-avatar">🦊</span></button>
+                        <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🐯', this)"><span class="kid-avatar">🐯</span></button>
+                        <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🦉', this)"><span class="kid-avatar">🦉</span></button>
+                        <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🐺', this)"><span class="kid-avatar">🐺</span></button>
+                        <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🐼', this)"><span class="kid-avatar">🐼</span></button>
+                        <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🦁', this)"><span class="kid-avatar">🦁</span></button>
+                        <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🐬', this)"><span class="kid-avatar">🐬</span></button>
+                        <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🦄', this)"><span class="kid-avatar">🦄</span></button>
+                    </div>
+
+                    <details class="text-brand-100/90">
+                        <summary class="cursor-pointer text-sm">More avatar palette</summary>
+                        <div class="grid grid-cols-5 md:grid-cols-10 gap-2 mt-3">
+                            <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🐨', this)"><span class="kid-avatar">🐨</span></button>
+                            <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🦝', this)"><span class="kid-avatar">🦝</span></button>
+                            <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🐸', this)"><span class="kid-avatar">🐸</span></button>
+                            <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🐧', this)"><span class="kid-avatar">🐧</span></button>
+                            <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🦜', this)"><span class="kid-avatar">🦜</span></button>
+                            <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🦋', this)"><span class="kid-avatar">🦋</span></button>
+                            <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🐢', this)"><span class="kid-avatar">🐢</span></button>
+                            <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🦖', this)"><span class="kid-avatar">🦖</span></button>
+                            <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🦩', this)"><span class="kid-avatar">🦩</span></button>
+                            <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🐙', this)"><span class="kid-avatar">🐙</span></button>
+                            <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🦥', this)"><span class="kid-avatar">🦥</span></button>
+                            <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🦔', this)"><span class="kid-avatar">🦔</span></button>
+                            <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🐳', this)"><span class="kid-avatar">🐳</span></button>
+                            <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🦓', this)"><span class="kid-avatar">🦓</span></button>
+                            <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🐊', this)"><span class="kid-avatar">🐊</span></button>
+                            <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🦚', this)"><span class="kid-avatar">🦚</span></button>
+                            <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🦈', this)"><span class="kid-avatar">🦈</span></button>
+                            <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🐇', this)"><span class="kid-avatar">🐇</span></button>
+                            <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🦌', this)"><span class="kid-avatar">🦌</span></button>
+                            <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🐿️', this)"><span class="kid-avatar">🐿️</span></button>
+                        </div>
+                    </details>
+                </div>
+
+                <div>
+                    <p class="text-xs uppercase tracking-wide text-brand-100/70 mb-2">3) Enter Age</p>
+                    <div class="max-w-xs">
+                        <label for="kid-age-input" class="sr-only">Current age</label>
+                        <input id="kid-age-input" type="number" min="0" max="60" value="13" oninput="setKidAge(this.value)" class="w-full rounded-lg border border-brand-300 bg-white text-gray-900 px-3 py-2 font-semibold" />
+                        <p class="text-xs text-brand-100/80 mt-1">Your story runs from age <span id="journey-age-start">13</span> to age 65.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12 w-full mx-auto">
+                <button id="start-story-btn" onclick="startFlow('character')" disabled class="group relative bg-white bg-opacity-10 border border-brand-500 rounded-2xl p-8 text-left transition-all duration-300 opacity-40 cursor-not-allowed">
+                    <h3 id="journey-card-title" class="text-2xl font-bold mb-2">The Journey of ???</h3>
+                    <p id="journey-card-subtitle" class="text-brand-100 text-sm mb-4">Choose a name, avatar, and age to unlock the story.</p>
+                    <span class="inline-flex items-center text-brand-400 font-semibold group-hover:text-white transition-colors">Start the Story &rarr;</span>
+                </button>
+
+                <button onclick="startFlow('concept')" class="group relative bg-white bg-opacity-10 hover:bg-opacity-20 border border-brand-500 rounded-2xl p-8 text-left transition-all duration-300 transform hover:-translate-y-1">
+                    <h3 class="text-2xl font-bold mb-2">The Concept Sandbox</h3>
+                    <p class="text-brand-100 text-sm mb-4">Skip the story. Dive into compounding, timing, fees, and diversification mechanics.</p>
+                    <span class="inline-flex items-center text-brand-400 font-semibold group-hover:text-white transition-colors">Explore the Math &rarr;</span>
+                </button>
+            </div>
+
+            <div class="mt-8">
+                <button onclick="startFlow('handout')" class="text-brand-300 hover:text-white underline decoration-brand-500 underline-offset-4 transition-colors">
+                    View the Printable Study Guide
+                </button>
+            </div>
+
+            <p class="text-sm text-brand-100/50 mt-12">Based on the principles by Scott Galloway</p>
+        </div>
+    </div>
+
+    <div id="app-container" class="hidden">
+        <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md border-b border-gray-200 z-50">
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center">
+                <div class="z-10 flex items-center cursor-pointer hover:text-brand-600 transition-colors" onclick="location.reload()">
+                    <span class="font-semibold text-gray-900 text-sm">&larr; Back to Menu</span>
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center gap-4 pointer-events-none">
+                    <div id="flow-avatar" class="hidden w-14 h-14 rounded-full bg-brand-100 text-brand-900 items-center justify-center text-3xl md:text-4xl">❓</div>
+                    <div id="flow-title" class="font-extrabold text-3xl md:text-4xl text-brand-900">Flow Title</div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24">
+            <div class="flex flex-col lg:flex-row gap-12 relative">
+                <div class="w-full lg:w-5/12 pb-32">
+                    <div id="flow-character" class="hidden">
+                        <div class="step" data-step="c1">
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Chapter 1: The Engine Starts</h2>
+                            <p class="text-lg text-gray-700 mb-6">Meet <span data-char-name>???</span>. At age <span id="story-age-start">13</span>, <span data-char-name>???</span> starts saving from a first job.</p>
+                            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                                <label class="block text-sm font-bold text-gray-900 mb-2">How much should <span data-char-name>???</span> save per month?</label>
+                                <div class="flex items-center space-x-4 mb-2">
+                                    <input type="range" id="c1-savings" min="0" max="1000" step="50" value="0">
+                                    <span id="c1-savings-val" class="font-mono font-bold text-brand-600 w-16 text-right">$0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step" data-step="c2">
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Chapter 2: Where to park the cash?</h2>
+                            <p class="text-lg text-gray-700 mb-6"><span data-char-name>???</span> now needs to choose where the money goes.</p>
+                            <div class="space-y-4">
+                                <div class="choice-card btn-asset selected-red" onclick="setCharInput('assetClass', 'none', this, 'btn-asset')">
+                                    <h4 class="font-bold text-gray-900">No Investment (0%)</h4>
+                                    <p class="text-sm text-gray-500">Default baseline: cash not invested.</p>
+                                </div>
+                                <div class="choice-card btn-asset" onclick="setCharInput('assetClass', 'cash', this, 'btn-asset')">
+                                    <h4 class="font-bold text-gray-900">Bank Account (2%)</h4>
+                                    <p class="text-sm text-gray-500">Low growth, often close to inflation.</p>
+                                </div>
+                                <div class="choice-card btn-asset" onclick="setCharInput('assetClass', 'sp500', this, 'btn-asset')">
+                                    <h4 class="font-bold text-gray-900">S&P 500 Index (8%)</h4>
+                                    <p class="text-sm text-gray-500">Higher long-run return with volatility.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step" data-step="c3">
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Chapter 3: The Fee Trap</h2>
+                            <p class="text-lg text-gray-700 mb-6"><span data-char-name>???</span> chooses between active management fees and low-cost indexing.</p>
+                            <div class="space-y-4">
+                                <div class="choice-card btn-fee" onclick="setCharInput('fee', 1.5, this, 'btn-fee')">
+                                    <h4 class="font-bold text-red-700">Active Manager (1.5%)</h4>
+                                    <p class="text-sm text-gray-500">Expensive and drags returns.</p>
+                                </div>
+                                <div class="choice-card btn-fee selected-green" onclick="setCharInput('fee', 0.05, this, 'btn-fee')">
+                                    <h4 class="font-bold text-green-700">Passive Index (0.05%)</h4>
+                                    <p class="text-sm text-gray-500">Lower fees preserve compounding.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step" data-step="c4">
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Chapter 4: Diversification Choice</h2>
+                            <p class="text-lg text-gray-700 mb-6">Now <span data-char-name>???</span> chooses concentration level before a single-company shock hits at midlife.</p>
+                            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 space-y-5">
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-900 mb-3">How many companies are in <span data-char-name>???</span>'s portfolio?</label>
+                                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                        <button class="choice-card btn-char-companies" onclick="setCharCompanies(1, this)">
+                                            <h4 class="font-bold text-red-700 leading-tight text-center">1 Company</h4>
+                                            <p class="text-xs text-gray-500 mt-1">Concentrated</p>
+                                        </button>
+                                        <button class="choice-card btn-char-companies" onclick="setCharCompanies(10, this)">
+                                            <h4 class="font-bold text-gray-900 leading-tight text-center">10 Companies</h4>
+                                            <p class="text-xs text-gray-500 mt-1">Focused</p>
+                                        </button>
+                                        <button class="choice-card btn-char-companies" onclick="setCharCompanies(50, this)">
+                                            <h4 class="font-bold text-gray-900 leading-tight text-center">50 Companies</h4>
+                                            <p class="text-xs text-gray-500 mt-1">Broad</p>
+                                        </button>
+                                        <button class="choice-card btn-char-companies selected-green" onclick="setCharCompanies(500, this)">
+                                            <h4 class="font-bold text-green-700 leading-tight text-center">500 Companies</h4>
+                                            <p class="text-xs text-gray-500 mt-1">Market-wide</p>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-900 mb-3">Outcome for the one company in question</label>
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                        <button class="choice-card btn-char-outcome selected-red" onclick="setCharOutcome(-100, this)">
+                                            <h4 class="font-bold text-red-700">Bust (-100%)</h4>
+                                        </button>
+                                        <button class="choice-card btn-char-outcome" onclick="setCharOutcome(8, this)">
+                                            <h4 class="font-bold text-gray-900">Average Year (+8%)</h4>
+                                        </button>
+                                        <button class="choice-card btn-char-outcome" onclick="setCharOutcome(100, this)">
+                                            <h4 class="font-bold text-green-700">Good (+100%)</h4>
+                                        </button>
+                                        <button class="choice-card btn-char-outcome" onclick="setCharOutcome(300, this)">
+                                            <h4 class="font-bold text-green-700">Great (+300%)</h4>
+                                        </button>
+                                        <button class="choice-card btn-char-outcome" onclick="setCharOutcome(800, this)">
+                                            <h4 class="font-bold text-green-700">Outlier (+800%)</h4>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm text-gray-700">
+                                    <p><strong>Exposure:</strong> one company is about <span id="c4-weight-val" class="font-semibold text-brand-700">100%</span> of the portfolio.</p>
+                                    <p><strong>Portfolio impact if that company moves:</strong> <span id="c4-impact-val" class="font-semibold text-red-600">-100%</span>.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step" data-step="c5">
+                            <h2 id="c5-title" class="text-4xl font-extrabold text-gray-900 mb-4">Chapter 5: Event Shock</h2>
+                            <p id="c5-subtitle" class="text-lg text-gray-700 mb-6">At age <span id="c5-event-age">45</span>, one major event hits. Your Chapter 4 exposure determines how hard it lands.</p>
+                            <div id="c5-panel" class="rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-900">
+                                <p id="c5-impact-copy"><strong>Impact now:</strong> Portfolio shock from one-company event = <span id="c5-impact-val" class="font-bold">-100%</span>.</p>
+                            </div>
+                        </div>
+
+                        <div class="step" data-step="c6">
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Chapter 6: The Future</h2>
+                            <p class="text-lg text-gray-700 mb-3">From age <span id="c6-event-age">45</span> to 65, compounding keeps working from whatever base survived the shock.</p>
+                            <p class="text-sm text-gray-600">Same saver. Same contributions. Same market assumptions. Different concentration choice.</p>
+                        </div>
+                    </div>
+
+                    <div id="flow-concept" class="hidden">
+                        <div class="step" data-step="s1">
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">1. Linear vs Exponential</h2>
+                            <div class="space-y-6 bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-900 mb-2">Monthly Contribution ($)</label>
+                                    <input type="range" id="s1-pmt" min="100" max="2000" step="100" value="500">
+                                    <p class="text-right text-sm font-mono mt-1" id="s1-pmt-val">$500</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-900 mb-2">Annual Return (%)</label>
+                                    <input type="range" id="s1-rate" min="2" max="15" step="1" value="8">
+                                    <p class="text-right text-sm font-mono mt-1" id="s1-rate-val">8%</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step" data-step="s2">
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">2. The Variable of Time</h2>
+                            <div class="bg-white p-6 rounded-xl border border-gray-200">
+                                <label class="block text-sm font-bold text-gray-900 mb-2">Age You Start Investing</label>
+                                <input type="range" id="s2-age" min="20" max="45" step="5" value="20">
+                                <p class="text-right text-sm font-mono mt-1 text-brand-600 font-bold" id="s2-age-val">Age 20</p>
+                            </div>
+                        </div>
+
+                        <div class="step" data-step="s3">
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">3. The Friction of Fees</h2>
+                            <div class="bg-red-50 p-6 rounded-xl border border-red-200">
+                                <label class="block text-sm font-bold text-red-900 mb-2">Wall Street Management Fee (%)</label>
+                                <input type="range" id="s3-fee" min="0" max="3" step="0.25" value="1.5">
+                                <p class="text-right text-sm font-mono font-bold text-red-600 mt-1" id="s3-fee-val">1.50%</p>
+                            </div>
+                        </div>
+
+                        <div class="step" data-step="s4">
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">4. The Shield of Diversification</h2>
+                            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                                <label class="block text-sm font-bold text-gray-900 mb-3">Outcome for the one company in question</label>
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
+                                    <button class="choice-card btn-outcome selected-red" onclick="setConceptOutcome(-100, this)">
+                                        <h4 class="font-bold text-red-700">Bust (-100%)</h4>
+                                    </button>
+                                    <button class="choice-card btn-outcome" onclick="setConceptOutcome(8, this)">
+                                        <h4 class="font-bold text-gray-800">Average Year (+8%)</h4>
+                                    </button>
+                                    <button class="choice-card btn-outcome" onclick="setConceptOutcome(100, this)">
+                                        <h4 class="font-bold text-green-700">Good (+100%)</h4>
+                                    </button>
+                                    <button class="choice-card btn-outcome" onclick="setConceptOutcome(300, this)">
+                                        <h4 class="font-bold text-green-700">Great (+300%)</h4>
+                                    </button>
+                                    <button class="choice-card btn-outcome" onclick="setConceptOutcome(800, this)">
+                                        <h4 class="font-bold text-green-700">Outlier (+800%)</h4>
+                                    </button>
+                                </div>
+
+                                <label class="block text-sm font-bold text-gray-900 mb-4">How many companies do you own?</label>
+                                <input type="range" id="s4-companies" min="1" max="500" step="1" value="1">
+                                <div class="mt-4 flex justify-between items-end border-t border-gray-100 pt-4">
+                                    <div>
+                                        <p class="text-xs text-gray-500 uppercase font-semibold">Portfolio Size</p>
+                                        <p class="text-xl font-bold text-brand-600" id="s4-companies-val">1 Company</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-xs text-gray-500 uppercase font-semibold">Impact from one company</p>
+                                        <p class="text-3xl font-extrabold text-red-600" id="s4-damage-val">-100%</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="flow-handout" class="hidden w-full lg:w-[200%] pb-32">
+                        <div class="max-w-5xl space-y-6">
+                            <section class="handout-page">
+                                <div class="text-center mb-8 border-b-2 border-brand-900 pb-5">
+                                    <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight mb-2">The Algebra of Wealth</h1>
+                                    <h2 class="text-xl text-brand-600 font-medium">Student Study Guide: Diversification</h2>
+                                </div>
+                                <p class="text-gray-700 mb-4">This guide is organized to match the two diversification sections in the book. Read it like a map: first understand the system, then understand the investing mechanics.</p>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-gray-700">
+                                    <div class="p-4 rounded-lg border border-gray-200 bg-gray-50">
+                                        <p class="font-semibold mb-1">Section A</p>
+                                        <p class="mb-2">Diversification: The Capitalist's Handbook</p>
+                                        <ul class="list-disc pl-5 space-y-1">
+                                            <li>Capital vs. Labor</li>
+                                            <li>Inflation</li>
+                                            <li>Asset Classes</li>
+                                        </ul>
+                                    </div>
+                                    <div class="p-4 rounded-lg border border-gray-200 bg-gray-50">
+                                        <p class="font-semibold mb-1">Section B</p>
+                                        <p class="mb-2">Diversification: Basic Principles of Investing</p>
+                                        <ul class="list-disc pl-5 space-y-1">
+                                            <li>Risk and Return</li>
+                                            <li>Time in the Market</li>
+                                            <li>Tyranny of Fees</li>
+                                            <li>Diversification</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="handout-page handout-major-break">
+                                <h3 class="text-2xl font-bold mb-2">Section A: The Capitalist's Handbook</h3>
+                                <p class="text-gray-700 mb-5">This section answers: What game are we playing? Before you choose investments, understand how money behaves in the real economy.</p>
+
+                                <div class="space-y-5">
+                                    <div class="handout-block p-4 rounded-lg border border-gray-200">
+                                        <h4 class="font-semibold text-lg mb-2">Subsection: Capital vs. Labor</h4>
+                                        <p class="text-xs uppercase tracking-wide text-brand-700 mb-2">Rule: Convert labor surplus into capital early and repeatedly.</p>
+                                        <p class="text-gray-700 text-sm mb-2"><strong>Labor</strong> pays you for time worked. <strong>Capital</strong> can grow while you are not working.</p>
+                                        <p class="text-gray-700 text-sm mb-3">The book's core idea: use labor income to buy capital-producing assets.</p>
+                                        <p class="text-gray-700 text-sm mb-2">Narrative example: if two people earn the same salary but one invests a fixed percentage every month, the investor usually builds more long-run wealth.</p>
+                                        <div class="mt-1 grid grid-cols-2 gap-2 text-xs">
+                                            <div class="p-2 bg-gray-50 rounded border border-gray-200"><strong>Labor model:</strong> $20/hr x hours</div>
+                                            <div class="p-2 bg-gray-50 rounded border border-gray-200"><strong>Capital model:</strong> $ invested x years</div>
+                                        </div>
+                                        <p class="mt-2 text-sm"><strong>Highlight:</strong> Long-run wealth is usually built by converting labor surplus into capital, repeatedly.</p>
+                                    </div>
+
+                                    <div class="handout-block p-4 rounded-lg border border-gray-200">
+                                        <h4 class="font-semibold text-lg mb-2">Subsection: Inflation</h4>
+                                        <p class="text-xs uppercase tracking-wide text-brand-700 mb-2">Rule: Aim for returns above inflation, not just positive returns.</p>
+                                        <p class="text-gray-700 text-sm mb-2">Inflation is a quiet force that reduces buying power over time.</p>
+                                        <div class="mini-chart p-3 text-xs text-gray-600">
+                                            <p class="mb-2">At 3% inflation:</p>
+                                            <p>$100 today -> about $74 buying power in 10 years</p>
+                                            <p>$100 today -> about $55 buying power in 20 years</p>
+                                        </div>
+                                        <p class="text-gray-700 text-sm mt-2">If an account pays 1% while inflation is 3%, your real return is about -2%.</p>
+                                        <p class="mt-2 text-sm">If your money earns less than inflation, your real purchasing power shrinks.</p>
+                                        <p class="mt-1 text-sm"><strong>Highlight:</strong> "Safe" cash can still lose in real terms.</p>
+                                    </div>
+
+                                    <div class="handout-block p-4 rounded-lg border border-gray-200">
+                                        <h4 class="font-semibold text-lg mb-2">Subsection: Asset Classes</h4>
+                                        <p class="text-xs uppercase tracking-wide text-brand-700 mb-2">Rule: Use different asset classes for different jobs.</p>
+                                        <p class="text-sm text-gray-700 mb-2">Asset classes are tools with different jobs in a portfolio.</p>
+                                        <ul class="list-disc pl-5 text-sm text-gray-700 space-y-1">
+                                            <li><strong>Stocks:</strong> ownership in corporations, higher growth potential, bigger swings</li>
+                                            <li><strong>Bonds:</strong> lending for interest, usually steadier and lower growth</li>
+                                            <li><strong>Real Estate:</strong> property, can use leverage, but can be concentrated</li>
+                                        </ul>
+                                        <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-2 text-xs text-gray-700">
+                                            <div class="p-2 rounded border border-gray-200 bg-gray-50"><strong>Growth role:</strong> Stocks</div>
+                                            <div class="p-2 rounded border border-gray-200 bg-gray-50"><strong>Stability role:</strong> Bonds</div>
+                                            <div class="p-2 rounded border border-gray-200 bg-gray-50"><strong>Hybrid role:</strong> Real Estate</div>
+                                        </div>
+                                        <p class="text-gray-700 text-sm mt-2">A portfolio can combine these roles so one weak area does not dominate total results.</p>
+                                        <p class="mt-2 text-sm"><strong>Highlight:</strong> Diversification across classes can reduce concentration risk.</p>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="handout-page handout-major-break">
+                                <h3 class="text-2xl font-bold mb-2">Section B: Basic Principles of Investing</h3>
+                                <p class="text-gray-700 mb-5">This section answers: If you are in the game, what rules improve your odds over decades?</p>
+
+                                <div class="space-y-5">
+                                    <div class="handout-block p-4 rounded-lg border border-gray-200">
+                                        <h4 class="font-semibold text-lg mb-2">Subsection: Risk and Return</h4>
+                                        <p class="text-xs uppercase tracking-wide text-brand-700 mb-2">Rule: Higher expected return usually requires tolerating higher volatility.</p>
+                                        <p class="text-sm text-gray-700">Higher expected return usually comes with higher uncertainty and deeper drawdowns.</p>
+                                        <div class="mt-3 grid grid-cols-3 gap-2 text-xs text-gray-700">
+                                            <div class="p-2 rounded border border-gray-200 bg-gray-50 text-center">Low risk<br/>Lower return</div>
+                                            <div class="p-2 rounded border border-gray-200 bg-gray-50 text-center">Medium risk<br/>Medium return</div>
+                                            <div class="p-2 rounded border border-gray-200 bg-gray-50 text-center">High risk<br/>Higher return</div>
+                                        </div>
+                                        <p class="text-gray-700 text-sm mt-2">Short-term drops are part of long-term investing in growth assets.</p>
+                                        <p class="mt-2 text-sm"><strong>Highlight:</strong> If something sounds like "high return, no risk," pause and question it.</p>
+                                    </div>
+
+                                    <div class="handout-block p-4 rounded-lg border border-gray-200">
+                                        <h4 class="font-semibold text-lg mb-2">Subsection: Time in the Market</h4>
+                                        <p class="text-xs uppercase tracking-wide text-brand-700 mb-2">Rule: The compounding curve is quiet early and powerful later.</p>
+                                        <p class="text-sm text-gray-700 mb-2">Compounding is nonlinear. Early years can look slow; later years can accelerate.</p>
+                                        <div class="mini-chart mt-2">
+                                            <div class="mini-line">
+                                                <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                                                    <path d="M0,95 C20,94 38,92 52,85 C66,77 82,56 100,18" fill="none" stroke="#0ea5e9" stroke-width="3"/>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <p class="text-gray-700 text-sm mt-2">Narrative example: two investors with equal monthly contributions can end far apart if one starts years earlier.</p>
+                                        <p class="mt-2 text-sm">Missing years, especially strong recovery years, can meaningfully lower final wealth.</p>
+                                        <p class="mt-1 text-sm"><strong>Highlight:</strong> Time is not just a variable; it is a force multiplier.</p>
+                                    </div>
+
+                                    <div class="handout-block p-4 rounded-lg border border-gray-200">
+                                        <h4 class="font-semibold text-lg mb-2">Subsection: Tyranny of Fees</h4>
+                                        <p class="text-xs uppercase tracking-wide text-brand-700 mb-2">Rule: Treat recurring fees as compounding friction.</p>
+                                        <p class="text-sm text-gray-700">Fees reduce returns every year, which reduces the base that compounds next year.</p>
+                                        <div class="mt-3 text-xs text-gray-700 p-3 rounded border border-gray-200 bg-gray-50">
+                                            Example lens: 8.0% gross return vs 6.5% net return (after 1.5% fee) can produce a major lifetime gap.
+                                        </div>
+                                        <div class="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-700">
+                                            <div class="p-2 rounded border border-gray-200 bg-green-50">Low fee path: more capital remains to compound</div>
+                                            <div class="p-2 rounded border border-gray-200 bg-red-50">High fee path: wealth gap grows over time</div>
+                                        </div>
+                                        <p class="mt-2 text-sm">This is why small percentage fees deserve serious attention.</p>
+                                        <p class="mt-1 text-sm"><strong>Highlight:</strong> Cost control is a performance strategy.</p>
+                                    </div>
+
+                                    <div class="handout-block p-4 rounded-lg border border-gray-200">
+                                        <h4 class="font-semibold text-lg mb-2">Subsection: Diversification</h4>
+                                        <p class="text-xs uppercase tracking-wide text-brand-700 mb-2">Rule: Avoid single-point failure in your portfolio.</p>
+                                        <p class="text-sm text-gray-700">Diversification reduces the effect of any one outcome (good or bad) on your total portfolio.</p>
+                                        <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                                            <div class="p-2 rounded border border-gray-200 bg-red-50">Concentrated bet + bad outcome -> severe damage</div>
+                                            <div class="p-2 rounded border border-gray-200 bg-green-50">Diversified portfolio + bad outcome -> manageable hit</div>
+                                        </div>
+                                        <p class="text-gray-700 text-sm mt-2">Diversification also means any single big winner affects less of the total portfolio. You trade some upside for survivability.</p>
+                                        <p class="mt-2 text-sm">Diversification does not guarantee top performance each year; it improves survivability across many years.</p>
+                                        <p class="mt-1 text-sm"><strong>Highlight:</strong> Protecting against ruin is a winning long-term strategy.</p>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="sticky-viz-container" class="hidden lg:block lg:w-7/12">
+                    <div class="sticky-viz flex-col gap-4">
+                        <div id="viz-scoreboard" class="w-full bg-brand-900 text-white p-6 rounded-2xl shadow-xl flex justify-between items-center transition-all duration-300 transform hidden">
+                            <div>
+                                <p id="sb-title" class="text-brand-200 text-xs md:text-sm uppercase tracking-wider font-bold mb-1">Final Wealth</p>
+                                <h3 id="sb-value" class="text-4xl md:text-5xl font-extrabold font-mono text-green-400 transition-colors duration-500">$0</h3>
+                            </div>
+                            <div id="sb-compare" class="text-right hidden opacity-0 transition-opacity duration-500">
+                                <p id="sb-compare-title" class="text-brand-200 text-xs md:text-sm uppercase tracking-wider font-bold mb-1">Difference</p>
+                                <h3 id="sb-compare-value" class="text-2xl md:text-3xl font-bold font-mono text-red-400 transition-colors duration-500">-$0</h3>
+                            </div>
+                        </div>
+
+                        <div id="journey-ledger" class="hidden w-full bg-white p-4 rounded-2xl shadow-xl border border-gray-100">
+                            <p class="text-xs uppercase tracking-wide font-bold text-gray-500 mb-3">Journey Ledger</p>
+                            <div class="space-y-2 text-sm">
+                                <div id="jl-row-savings" class="hidden justify-between"><span class="text-gray-600">Savings (Ch 1)</span><span id="jl-savings" class="font-semibold text-gray-900">--</span></div>
+                                <div id="jl-row-asset" class="hidden justify-between"><span class="text-gray-600">Return Path (Ch 2)</span><span id="jl-asset" class="font-semibold text-gray-900">--</span></div>
+                                <div id="jl-row-fee" class="hidden justify-between"><span class="text-gray-600">Fees (Ch 3)</span><span id="jl-fee" class="font-semibold text-gray-900">--</span></div>
+                                <div id="jl-row-companies" class="hidden justify-between"><span class="text-gray-600">Diversification (Ch 4)</span><span id="jl-companies" class="font-semibold text-gray-900">--</span></div>
+                                <div id="jl-row-event" class="hidden justify-between"><span class="text-gray-600">One-Company Event (Ch 4)</span><span id="jl-event" class="font-semibold text-gray-900">--</span></div>
+                            </div>
+                        </div>
+
+                        <div class="w-full bg-white p-6 rounded-2xl shadow-xl border border-gray-100 h-[50vh] flex items-center justify-center">
+                            <canvas id="mainChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
