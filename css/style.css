@@ -226,6 +226,11 @@ input[type=range]::-webkit-slider-runnable-track {
         break-inside: avoid;
     }
 
+    #flow-handout .handout-major-break {
+        page-break-before: always;
+        break-before: page;
+    }
+
     .handout-page:last-child {
         page-break-after: auto;
         break-after: auto;
