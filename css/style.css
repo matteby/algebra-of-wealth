@@ -131,8 +131,9 @@ input[type=range]::-webkit-slider-runnable-track {
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 12px;
-    height: 2px;
+    top: 10px;
+    bottom: 10px;
+    height: auto;
     background: transparent;
 }
 
