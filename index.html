@@ -232,25 +232,127 @@
                     </div>
 
                     <div id="flow-handout" class="hidden w-full lg:w-[200%] pb-32">
-                        <div class="max-w-4xl bg-white p-8 md:p-12 shadow-sm border border-gray-200 rounded-xl">
-                            <div class="text-center mb-10 border-b-2 border-brand-900 pb-6">
-                                <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight mb-2">The Algebra of Wealth</h1>
-                                <h2 class="text-xl text-brand-600 font-medium">Core Mental Models & Formulas</h2>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                                <div class="space-y-8">
-                                    <section>
-                                        <h3 class="text-2xl font-bold text-gray-900 mb-4 border-l-4 border-brand-500 pl-3">The Wealth Equation</h3>
-                                        <div class="bg-brand-50 p-4 rounded-lg font-mono text-center text-lg shadow-inner mb-4">Wealth = Focus + (Stoicism × Time × Diversification)</div>
-                                    </section>
+                        <div class="max-w-5xl space-y-6">
+                            <section class="handout-page">
+                                <div class="text-center mb-8 border-b-2 border-brand-900 pb-5">
+                                    <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight mb-2">The Algebra of Wealth</h1>
+                                    <h2 class="text-xl text-brand-600 font-medium">Student Study Guide (Grades 8-10)</h2>
                                 </div>
-                                <div class="space-y-8">
-                                    <section>
-                                        <h3 class="text-2xl font-bold text-gray-900 mb-4 border-l-4 border-brand-500 pl-3">Asset Classes</h3>
-                                        <p class="text-sm text-gray-700">Stocks = ownership in corporations. Bonds = lending money for interest. Real Estate = physical property with leverage potential.</p>
-                                    </section>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div>
+                                        <h3 class="text-2xl font-bold mb-3">What this guide is for</h3>
+                                        <p class="text-gray-700 mb-3">This guide helps you understand the big ideas behind investing and wealth building. You do not need to memorize everything. Focus on patterns and decision rules.</p>
+                                        <ul class="list-disc pl-5 text-gray-700 space-y-1">
+                                            <li>Money can grow while you sleep (capital).</li>
+                                            <li>Time is your biggest advantage.</li>
+                                            <li>Fees quietly destroy long-term outcomes.</li>
+                                            <li>Diversification helps you survive bad luck.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-brand-50 rounded-xl p-5 border border-brand-100">
+                                        <h4 class="font-bold text-brand-900 mb-2">Core Equation</h4>
+                                        <p class="font-mono text-lg text-center py-3">Wealth = Focus + (Stoicism x Time x Diversification)</p>
+                                        <p class="text-sm text-gray-700">Think of this as a system, not a single trick. Most wealth comes from consistent habits repeated over years.</p>
+                                    </div>
                                 </div>
-                            </div>
+                            </section>
+
+                            <section class="handout-page">
+                                <h3 class="text-2xl font-bold mb-4">Page 2: The Capitalist's Handbook</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div>
+                                        <h4 class="font-semibold text-lg mb-2">Capital vs. Labor</h4>
+                                        <p class="text-gray-700 mb-2"><strong>Labor</strong> means trading your time for money (a paycheck). You only have 24 hours per day.</p>
+                                        <p class="text-gray-700"><strong>Capital</strong> means owning assets (stocks, bonds, real estate) that can grow and produce returns without your hourly effort.</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-lg mb-2">Inflation (the silent leak)</h4>
+                                        <p class="text-gray-700 mb-2">If your money earns 0% and prices rise 3%, your buying power falls.</p>
+                                        <div class="mini-chart p-3 text-xs text-gray-600">
+                                            <p class="mb-2">$100 today at 3% inflation</p>
+                                            <p>After 10 years: ~ $74 buying power</p>
+                                            <p>After 20 years: ~ $55 buying power</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="handout-page">
+                                <h3 class="text-2xl font-bold mb-4">Page 3: Asset Classes in Plain Language</h3>
+                                <div class="space-y-4">
+                                    <div class="p-4 rounded-lg border border-gray-200 bg-gray-50">
+                                        <h4 class="font-bold">Stocks (Equities)</h4>
+                                        <p class="text-gray-700 text-sm">You own a tiny piece of a company. If the company grows, your piece can become more valuable.</p>
+                                    </div>
+                                    <div class="p-4 rounded-lg border border-gray-200 bg-gray-50">
+                                        <h4 class="font-bold">Bonds (Fixed Income)</h4>
+                                        <p class="text-gray-700 text-sm">You lend money to a company or government, and they pay interest. Usually less exciting, but often steadier.</p>
+                                    </div>
+                                    <div class="p-4 rounded-lg border border-gray-200 bg-gray-50">
+                                        <h4 class="font-bold">Real Estate</h4>
+                                        <p class="text-gray-700 text-sm">Owning property. Can grow in value and provide income, but requires management and carries risks too.</p>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="handout-page">
+                                <h3 class="text-2xl font-bold mb-4">Page 4: Compounding and Time Value of Money</h3>
+                                <p class="text-gray-700 mb-4">Compounding means returns earning returns. It starts slow, then bends upward.</p>
+                                <div class="mini-chart mb-4">
+                                    <div class="mini-line">
+                                        <svg viewBox="0 0 100 10" preserveAspectRatio="none">
+                                            <path d="M0,9 C20,9 35,8 50,7 C65,6 80,4 100,1" fill="none" stroke="#0ea5e9" stroke-width="1.5"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                                    <div class="p-4 rounded-lg border border-gray-200">
+                                        <p class="font-semibold mb-1">Start earlier</p>
+                                        <p class="text-gray-700">More years compounding, often far more final wealth.</p>
+                                    </div>
+                                    <div class="p-4 rounded-lg border border-gray-200">
+                                        <p class="font-semibold mb-1">Start later</p>
+                                        <p class="text-gray-700">You must save much more to catch up.</p>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="handout-page">
+                                <h3 class="text-2xl font-bold mb-4">Page 5: Fees and Diversification</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div>
+                                        <h4 class="font-semibold text-lg mb-2">Fees: the quiet drag</h4>
+                                        <p class="text-gray-700 text-sm mb-2">A fee is not just one-time. It repeats every year and reduces your compounding base.</p>
+                                        <ul class="list-disc pl-5 text-sm text-gray-700 space-y-1">
+                                            <li>Low fee + long time = huge advantage</li>
+                                            <li>High fee + long time = huge wealth loss</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-lg mb-2">Diversification: your safety armor</h4>
+                                        <p class="text-gray-700 text-sm">If one company crashes and you own only that company, your portfolio can collapse. If you own many companies, one failure hurts less.</p>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="handout-page">
+                                <h3 class="text-2xl font-bold mb-4">Page 6: Decision Checklist + Reflection</h3>
+                                <div class="space-y-4 text-gray-700">
+                                    <div class="p-4 border border-gray-200 rounded-lg">
+                                        <h4 class="font-semibold mb-2">Before any investing decision, ask:</h4>
+                                        <ul class="list-disc pl-5 text-sm space-y-1">
+                                            <li>Am I concentrating too much in one bet?</li>
+                                            <li>What fee am I paying, and for what?</li>
+                                            <li>Am I giving this plan enough time?</li>
+                                            <li>Is this a long-term strategy or just hype?</li>
+                                        </ul>
+                                    </div>
+                                    <div class="p-4 border border-brand-200 rounded-lg bg-brand-50">
+                                        <h4 class="font-semibold mb-2">Write your rule:</h4>
+                                        <p class="text-sm">"When markets are noisy, I will __________ because long-term wealth is built by __________."</p>
+                                    </div>
+                                </div>
+                            </section>
                         </div>
                     </div>
                 </div>
