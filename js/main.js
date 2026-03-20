@@ -140,6 +140,15 @@ function getEventLabel() {
     return `${v > 0 ? '+' : ''}${v}%`;
 }
 
+function getEventLabelFromPct(v) {
+    if (v === -100) return 'Bust (-100%)';
+    if (v === 8) return 'Average Year (+8%)';
+    if (v === 100) return 'Good (+100%)';
+    if (v === 300) return 'Great (+300%)';
+    if (v === 800) return 'Outlier (+800%)';
+    return `${v > 0 ? '+' : ''}${Math.round(v)}%`;
+}
+
 function getStoryStepIndex(step) {
     if (!step || step[0] !== 'c') return 0;
     const n = parseInt(step.slice(1), 10);
@@ -221,13 +230,6 @@ function getCharBaseRate() {
 
 function getCharShockPct() {
     return (charState.companyOutcomePct / 100) * (1 / charState.companies);
-}
-
-function getRiskStdByCompanies(companies) {
-    if (companies <= 1) return 1.10;
-    if (companies <= 10) return 0.40;
-    if (companies <= 50) return 0.16;
-    return 0.06;
 }
 
 function randomNormal() {
@@ -328,6 +330,7 @@ function updateRiskControlsVisibility() {
 
     const rollBtn = document.getElementById('risk-roll-btn');
     const status = document.getElementById('risk-roll-status');
+    const finalPreview = document.getElementById('risk-final-preview');
     const disabled = riskState.mode !== 'typical';
 
     [rollBtn].forEach(btn => {
@@ -346,6 +349,26 @@ function updateRiskControlsVisibility() {
             status.innerText = 'Roll to sample one possible outcome from the distribution.';
         }
     }
+
+    if (finalPreview && selectedKidAge !== null) {
+        const rate = getCharBaseRate();
+        const fee = charState.fee;
+        const pmt = charState.pmt;
+        const years = FINAL_AGE - selectedKidAge;
+
+        let finalVal = 0;
+        if (riskState.mode === 'typical') {
+            if (riskState.lastRoll !== null) {
+                finalVal = buildPathFromImpactPct(selectedKidAge, rate, fee, pmt, riskState.lastRoll)[years];
+            } else {
+                finalVal = getRiskCurves(selectedKidAge, rate, fee, pmt).medianPath[years];
+            }
+        } else {
+            finalVal = buildPathFromImpactPct(selectedKidAge, rate, fee, pmt, charState.companyOutcomePct / charState.companies)[years];
+        }
+
+        finalPreview.innerText = `Final at age ${FINAL_AGE}: ${usd.format(finalVal)}`;
+    }
 }
 
 function rollRiskDraw() {
@@ -353,7 +376,12 @@ function rollRiskDraw() {
 
     const draw = sampleSingleCompanyReturn();
     riskState.lastRoll = draw.returnPct / charState.companies;
+    charState.companyOutcomePct = draw.returnPct;
     riskState.lastRollPercentile = draw.percentile;
+
+    document.querySelectorAll('.btn-char-outcome').forEach(el => el.classList.remove('selected', 'selected-red', 'selected-green'));
+
+    updateCharDiversificationReadout();
     updateRiskControlsVisibility();
     updateCharacterChart();
 }
@@ -370,6 +398,7 @@ function updateCharDiversificationReadout() {
     const c5Panel = document.getElementById('c5-panel');
     const c5Title = document.getElementById('c5-title');
     const c5Subtitle = document.getElementById('c5-subtitle');
+    const c4EventEl = document.getElementById('c4-active-event-val');
 
     if (weightEl) weightEl.innerText = weightPct.toFixed(weightPct >= 1 ? 0 : 2).replace('.00', '') + '%';
 
@@ -386,6 +415,8 @@ function updateCharDiversificationReadout() {
     if (c5Copy) {
         c5Copy.className = impactPct > 0 ? 'text-green-900' : (impactPct < 0 ? 'text-red-900' : 'text-gray-900');
     }
+
+    if (c4EventEl) c4EventEl.innerText = getEventLabelFromPct(charState.companyOutcomePct);
 
     if (c5Panel) {
         c5Panel.className = impactPct > 0
@@ -884,8 +915,10 @@ function updateCharacterChart() {
         let dataRoll = riskState.lastRoll !== null ? buildPathFromImpactPct(startAge, rate, fee, pmt, riskState.lastRoll) : null;
 
         if (currentStep === 'c4') {
-            dataChosen = dataChosen.map((v, i) => i <= crashIndex ? v : null);
-            dataDiversified = dataDiversified.map((v, i) => i <= crashIndex ? v : null);
+            if (riskState.mode === 'story') {
+                dataChosen = dataChosen.map((v, i) => i <= crashIndex ? v : null);
+                dataDiversified = dataDiversified.map((v, i) => i <= crashIndex ? v : null);
+            }
             dataMedian = dataMedian.map((v, i) => i <= crashIndex ? v : null);
             dataP10 = dataP10.map((v, i) => i <= crashIndex ? v : null);
             dataP90 = dataP90.map((v, i) => i <= crashIndex ? v : null);

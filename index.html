@@ -186,52 +186,10 @@
 
                         <div class="step" data-step="c4">
                             <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Chapter 4: Diversification Choice</h2>
-                            <p class="text-lg text-gray-700 mb-6">Now <span data-char-name>???</span> chooses concentration level before a single-company shock hits at midlife.</p>
+                            <p class="text-lg text-gray-700 mb-6">Set concentration and event assumptions in the right panel, then compare one story vs typical outcomes.</p>
                             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 space-y-5">
-                                <div>
-                                    <label class="block text-sm font-bold text-gray-900 mb-3">How many companies are in <span data-char-name>???</span>'s portfolio?</label>
-                                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                                        <button class="choice-card btn-char-companies" onclick="setCharCompanies(1, this)">
-                                            <h4 class="font-bold text-red-700 leading-tight text-center">1 Company</h4>
-                                            <p class="text-xs text-gray-500 mt-1">Concentrated</p>
-                                        </button>
-                                        <button class="choice-card btn-char-companies" onclick="setCharCompanies(10, this)">
-                                            <h4 class="font-bold text-gray-900 leading-tight text-center">10 Companies</h4>
-                                            <p class="text-xs text-gray-500 mt-1">Focused</p>
-                                        </button>
-                                        <button class="choice-card btn-char-companies" onclick="setCharCompanies(50, this)">
-                                            <h4 class="font-bold text-gray-900 leading-tight text-center">50 Companies</h4>
-                                            <p class="text-xs text-gray-500 mt-1">Broad</p>
-                                        </button>
-                                        <button class="choice-card btn-char-companies selected-green" onclick="setCharCompanies(500, this)">
-                                            <h4 class="font-bold text-green-700 leading-tight text-center">500 Companies</h4>
-                                            <p class="text-xs text-gray-500 mt-1">Market-wide</p>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label class="block text-sm font-bold text-gray-900 mb-3">Outcome for the one company in question</label>
-                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                        <button class="choice-card btn-char-outcome selected-red" onclick="setCharOutcome(-100, this)">
-                                            <h4 class="font-bold text-red-700">Bust (-100%)</h4>
-                                        </button>
-                                        <button class="choice-card btn-char-outcome" onclick="setCharOutcome(8, this)">
-                                            <h4 class="font-bold text-gray-900">Average Year (+8%)</h4>
-                                        </button>
-                                        <button class="choice-card btn-char-outcome" onclick="setCharOutcome(100, this)">
-                                            <h4 class="font-bold text-green-700">Good (+100%)</h4>
-                                        </button>
-                                        <button class="choice-card btn-char-outcome" onclick="setCharOutcome(300, this)">
-                                            <h4 class="font-bold text-green-700">Great (+300%)</h4>
-                                        </button>
-                                        <button class="choice-card btn-char-outcome" onclick="setCharOutcome(800, this)">
-                                            <h4 class="font-bold text-green-700">Outlier (+800%)</h4>
-                                        </button>
-                                    </div>
-                                </div>
-
                                 <div class="rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm text-gray-700">
+                                    <p><strong>One-company event right now:</strong> <span id="c4-active-event-val" class="font-semibold text-gray-900">Bust (-100%)</span></p>
                                     <p><strong>Exposure:</strong> one company is about <span id="c4-weight-val" class="font-semibold text-brand-700">100%</span> of the portfolio.</p>
                                     <p><strong>Portfolio impact if that company moves:</strong> <span id="c4-impact-val" class="font-semibold text-red-600">-100%</span>.</p>
                                 </div>
@@ -511,6 +469,26 @@
                             <div class="flex gap-2 mb-2">
                                 <button id="risk-roll-btn" class="choice-card text-xs px-3 py-2" onclick="rollRiskDraw()">Roll the Dice</button>
                             </div>
+                            <div class="mb-3">
+                                <p class="text-xs uppercase tracking-wide font-bold text-gray-500 mb-2">Diversification</p>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button class="choice-card btn-char-companies" onclick="setCharCompanies(1, this)"><span class="text-xs font-semibold text-red-700">1 Company</span></button>
+                                    <button class="choice-card btn-char-companies" onclick="setCharCompanies(10, this)"><span class="text-xs font-semibold text-gray-900">10 Companies</span></button>
+                                    <button class="choice-card btn-char-companies" onclick="setCharCompanies(50, this)"><span class="text-xs font-semibold text-gray-900">50 Companies</span></button>
+                                    <button class="choice-card btn-char-companies selected-green" onclick="setCharCompanies(500, this)"><span class="text-xs font-semibold text-green-700">500 Companies</span></button>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <p class="text-xs uppercase tracking-wide font-bold text-gray-500 mb-2">One-Company Event (One Story mode)</p>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button class="choice-card btn-char-outcome selected-red" onclick="setCharOutcome(-100, this)"><span class="text-xs font-semibold text-red-700">Bust (-100%)</span></button>
+                                    <button class="choice-card btn-char-outcome" onclick="setCharOutcome(8, this)"><span class="text-xs font-semibold text-gray-900">Average (+8%)</span></button>
+                                    <button class="choice-card btn-char-outcome" onclick="setCharOutcome(100, this)"><span class="text-xs font-semibold text-green-700">Good (+100%)</span></button>
+                                    <button class="choice-card btn-char-outcome" onclick="setCharOutcome(300, this)"><span class="text-xs font-semibold text-green-700">Great (+300%)</span></button>
+                                    <button class="choice-card btn-char-outcome" onclick="setCharOutcome(800, this)"><span class="text-xs font-semibold text-green-700">Outlier (+800%)</span></button>
+                                </div>
+                            </div>
+                            <p id="risk-final-preview" class="text-xs text-gray-700 mt-2">Final at age 65: --</p>
                             <p id="risk-roll-status" class="text-xs text-gray-600">Switch to Typical Outcomes to roll random draws.</p>
                         </div>
 
