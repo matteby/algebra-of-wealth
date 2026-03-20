@@ -460,12 +460,44 @@ function updateCharacterChart() {
             }
         ];
         
-        // Add a massive annotation showing exactly how much money is lost to fees at Age 65
+        // Cleaner fee annotation: arrow at final year with compact label
+        const endLabel = `Age ${FINAL_AGE}`;
         chartInstance.options.plugins.annotation.annotations = {
-            box1: {
-                type: 'box', xMin: 'Age 50', xMax: 'Age 64', yMin: dataActive[years], yMax: dataPassive[years],
-                backgroundColor: 'rgba(239, 68, 68, 0.1)', borderWidth: 0,
-                label: { display: isActiveSelected, content: `LOST TO FEES: ${usd.format(wealthLost)}`, position: 'center', color: '#b91c1c', font: { weight: 'bold', size: 14 } }
+            feeArrow: {
+                type: 'line',
+                xMin: endLabel,
+                xMax: endLabel,
+                yMin: dataActive[years],
+                yMax: dataPassive[years],
+                borderColor: 'rgba(239, 68, 68, 0.75)',
+                borderWidth: 3,
+                borderDash: [3, 3],
+                label: {
+                    display: true,
+                    content: isActiveSelected ? `Lost to fees: ${usd.format(wealthLost)}` : `Fee gap: ${usd.format(wealthLost)}`,
+                    position: 'start',
+                    yAdjust: -8,
+                    backgroundColor: 'rgba(255,255,255,0.95)',
+                    color: '#b91c1c',
+                    borderColor: '#fecaca',
+                    borderWidth: 1,
+                    padding: 6,
+                    font: { weight: 'bold', size: 12 }
+                }
+            },
+            feePointTop: {
+                type: 'point',
+                xValue: endLabel,
+                yValue: dataPassive[years],
+                backgroundColor: '#22c55e',
+                radius: 4
+            },
+            feePointBottom: {
+                type: 'point',
+                xValue: endLabel,
+                yValue: dataActive[years],
+                backgroundColor: '#ef4444',
+                radius: 4
             }
         };
     }
