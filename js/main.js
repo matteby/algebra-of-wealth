@@ -99,6 +99,67 @@ function updateScoreboard(visible, mainTitle='', mainValue=0, mainColor='text-gr
     }
 }
 
+function setText(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.innerText = value;
+}
+
+function setClassName(id, className) {
+    const el = document.getElementById(id);
+    if (el) el.className = className;
+}
+
+function getAssetLabel() {
+    if (charState.assetClass === 'sp500') return 'S&P 500 (8%)';
+    if (charState.assetClass === 'cash') return 'Bank (2%)';
+    return 'No Investment (0%)';
+}
+
+function getFeeLabel() {
+    return charState.fee === 1.5 ? 'Active (1.50%)' : 'Passive (0.05%)';
+}
+
+function getEventLabel() {
+    const v = charState.companyOutcomePct;
+    if (v === -100) return 'Bust (-100%)';
+    if (v === 8) return 'Average Year (+8%)';
+    if (v === 100) return 'Good (+100%)';
+    if (v === 300) return 'Great (+300%)';
+    if (v === 800) return 'Outlier (+800%)';
+    return `${v > 0 ? '+' : ''}${v}%`;
+}
+
+function getStoryStepIndex(step) {
+    if (!step || step[0] !== 'c') return 0;
+    const n = parseInt(step.slice(1), 10);
+    return Number.isNaN(n) ? 0 : n;
+}
+
+function updateJourneyLedger() {
+    const ledger = document.getElementById('journey-ledger');
+    if (!ledger) return;
+
+    if (currentFlow !== 'character') {
+        ledger.classList.add('hidden');
+        return;
+    }
+    ledger.classList.remove('hidden');
+
+    const stepIdx = getStoryStepIndex(currentStep);
+    const startAge = selectedKidAge;
+    setText('jl-savings', usd.format(charState.pmt) + '/mo');
+    setText('jl-asset', getAssetLabel());
+    setText('jl-fee', getFeeLabel());
+    setText('jl-companies', `${charState.companies} companies`);
+    setText('jl-event', getEventLabel());
+
+    setClassName('jl-row-savings', stepIdx >= 1 ? 'flex justify-between' : 'hidden justify-between');
+    setClassName('jl-row-asset', stepIdx >= 2 ? 'flex justify-between' : 'hidden justify-between');
+    setClassName('jl-row-fee', stepIdx >= 3 ? 'flex justify-between' : 'hidden justify-between');
+    setClassName('jl-row-companies', stepIdx >= 4 ? 'flex justify-between' : 'hidden justify-between');
+    setClassName('jl-row-event', stepIdx >= 4 ? 'flex justify-between' : 'hidden justify-between');
+}
+
 function setConceptOutcome(outcomePct, buttonEl = null) {
     conceptState.companyOutcomePct = outcomePct;
     if (buttonEl) {
@@ -249,6 +310,7 @@ function startFlow(flowType) {
         setupIntersectionObserver('flow-character');
         initChart();
         updateCharacterChart(); // Initial render
+        updateJourneyLedger();
     } else if(flowType === 'concept') {
         document.getElementById('flow-title').innerText = "The Concept Sandbox";
         const avatar = document.getElementById('flow-avatar');
@@ -260,6 +322,7 @@ function startFlow(flowType) {
         setupIntersectionObserver('flow-concept');
         initChart(); // Start with timeseries
         updateConceptChart(); // Initial render
+        updateJourneyLedger();
     } else if(flowType === 'handout') {
         document.getElementById('flow-title').innerText = "Printable Study Guide";
         const avatar = document.getElementById('flow-avatar');
@@ -268,6 +331,7 @@ function startFlow(flowType) {
             avatar.classList.remove('flex');
         }
         if (handout) handout.style.display = 'block';
+        updateJourneyLedger();
     }
     
     window.scrollTo(0,0);
@@ -355,6 +419,7 @@ function setCharInput(key, value, buttonEl = null, groupClass = null) {
     }
     
     updateCharacterChart();
+    updateJourneyLedger();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -365,6 +430,7 @@ document.addEventListener('DOMContentLoaded', () => {
             charState.pmt = parseInt(e.target.value);
             document.getElementById('c1-savings-val').innerText = usd.format(charState.pmt);
             updateCharacterChart();
+            updateJourneyLedger();
         });
     }
 
@@ -412,6 +478,7 @@ function setupIntersectionObserver(containerId) {
                     currentStep = stepId;
                     if(currentFlow === 'character') updateCharacterChart();
                     if(currentFlow === 'concept') updateConceptChart();
+                    updateJourneyLedger();
                 }
             }
         });
@@ -709,6 +776,7 @@ function updateCharacterChart() {
     }
 
     chartInstance.update();
+    updateJourneyLedger();
 }
 
 // --- Flow 2: Concept Logic ---
