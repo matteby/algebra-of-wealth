@@ -143,8 +143,19 @@ input[type=range]::-webkit-slider-runnable-track {
 }
 
 @media print {
+    @page {
+        size: letter;
+        margin: 0.5in;
+    }
+
+    html,
     body {
         background: #fff;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: auto !important;
+        height: auto !important;
+        overflow: visible !important;
     }
 
     nav,
@@ -153,21 +164,57 @@ input[type=range]::-webkit-slider-runnable-track {
         display: none !important;
     }
 
+    #flow-character,
+    #flow-concept {
+        display: none !important;
+    }
+
     #app-container,
     #flow-handout {
         display: block !important;
+    }
+
+    #app-container {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    #flow-handout {
+        width: 100% !important;
+        max-width: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    #flow-handout > .max-w-5xl {
+        max-width: none !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        gap: 0 !important;
     }
 
     .handout-page {
         page-break-after: always;
         break-after: page;
         border: none;
+        border-radius: 0;
+        box-shadow: none;
         margin: 0;
         padding: 0;
+        min-height: auto !important;
+        overflow: visible !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
     }
 
     .handout-page:last-child {
         page-break-after: auto;
         break-after: auto;
+    }
+
+    .mini-chart {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
 }
