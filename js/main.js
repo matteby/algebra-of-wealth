@@ -132,6 +132,7 @@ function startFlow(flowType) {
     if (handout) handout.style.display = 'none';
     
     const vizContainer = document.getElementById('sticky-viz-container');
+    const heroBadge = document.getElementById('hero-badge');
     if (vizContainer) {
         if (flowType === 'handout') {
             vizContainer.classList.remove('lg:block');
@@ -148,6 +149,13 @@ function startFlow(flowType) {
             avatar.classList.remove('hidden');
             avatar.innerText = selectedKid.avatar;
         }
+        if (heroBadge) {
+            heroBadge.classList.remove('hidden');
+            const badgeName = document.getElementById('hero-badge-name');
+            const badgeAvatar = document.getElementById('hero-badge-avatar');
+            if (badgeName) badgeName.innerText = selectedKid.name;
+            if (badgeAvatar) badgeAvatar.innerText = selectedKid.avatar;
+        }
         document.getElementById('flow-character').style.display = 'block';
         setupIntersectionObserver('flow-character');
         initChart();
@@ -156,6 +164,7 @@ function startFlow(flowType) {
         document.getElementById('flow-title').innerText = "The Concept Sandbox";
         const avatar = document.getElementById('flow-avatar');
         if (avatar) avatar.classList.add('hidden');
+        if (heroBadge) heroBadge.classList.add('hidden');
         document.getElementById('flow-concept').style.display = 'block';
         setupIntersectionObserver('flow-concept');
         initChart(); // Start with timeseries
@@ -164,6 +173,7 @@ function startFlow(flowType) {
         document.getElementById('flow-title').innerText = "Printable Study Guide";
         const avatar = document.getElementById('flow-avatar');
         if (avatar) avatar.classList.add('hidden');
+        if (heroBadge) heroBadge.classList.add('hidden');
         if (handout) handout.style.display = 'block';
     }
     
@@ -194,6 +204,9 @@ function selectKidName(name, buttonEl = null) {
     if (navAvatar && selectedKid.avatar) {
         navAvatar.innerText = selectedKid.avatar;
     }
+
+    const badgeName = document.getElementById('hero-badge-name');
+    if (badgeName) badgeName.innerText = selectedKid.name;
 }
 
 function selectKidAvatar(avatar, buttonEl = null) {
@@ -208,6 +221,9 @@ function selectKidAvatar(avatar, buttonEl = null) {
     if (navAvatar) {
         navAvatar.innerText = selectedKid.avatar;
     }
+
+    const badgeAvatar = document.getElementById('hero-badge-avatar');
+    if (badgeAvatar) badgeAvatar.innerText = selectedKid.avatar;
 }
 
 // --- UI Interaction Handlers (Character) ---
