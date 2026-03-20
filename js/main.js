@@ -8,8 +8,13 @@ let selectedKid = {
     avatar: '❓'
 };
 
-let selectedKidAge = 13;
+let selectedKidAge = null;
 const FINAL_AGE = 65;
+const setupState = {
+    nameSet: false,
+    avatarSet: false,
+    ageSet: false
+};
 
 const defaultKidAvatar = {
     Fionoa: '🦊',
@@ -182,6 +187,21 @@ function setConceptOutcome(outcomePct, buttonEl = null) {
     updateConceptChart();
 }
 
+function canStartStory() {
+    return setupState.nameSet && setupState.avatarSet && setupState.ageSet;
+}
+
+function updateStoryStartAvailability() {
+    const startBtn = document.getElementById('start-story-btn');
+    if (!startBtn) return;
+
+    const ready = canStartStory();
+    startBtn.disabled = !ready;
+    startBtn.className = ready
+        ? 'group relative bg-white bg-opacity-10 hover:bg-opacity-20 border border-brand-500 rounded-2xl p-8 text-left transition-all duration-300 transform hover:-translate-y-1 cursor-pointer opacity-100'
+        : 'group relative bg-white bg-opacity-10 border border-brand-500 rounded-2xl p-8 text-left transition-all duration-300 opacity-40 cursor-not-allowed';
+}
+
 function getCharBaseRate() {
     if (charState.assetClass === 'sp500') return 8;
     if (charState.assetClass === 'cash') return 2;
@@ -276,6 +296,10 @@ function setCharOutcome(outcomePct, buttonEl = null) {
 
 // --- Initialization ---
 function startFlow(flowType) {
+    if (flowType === 'character' && !canStartStory()) {
+        return;
+    }
+
     document.getElementById('landing-page').style.display = 'none';
     document.getElementById('app-container').classList.remove('hidden');
     
@@ -339,9 +363,7 @@ function startFlow(flowType) {
 
 function selectKidName(name, buttonEl = null) {
     selectedKid.name = name;
-    if (selectedKid.avatar === '❓' || !selectedKid.avatar) {
-        selectedKid.avatar = defaultKidAvatar[name] || '🙂';
-    }
+    setupState.nameSet = true;
 
     if (buttonEl) {
         document.querySelectorAll('.name-option').forEach(el => el.classList.remove('selected', 'selected-green', 'selected-red'));
@@ -357,15 +379,12 @@ function selectKidName(name, buttonEl = null) {
         cardTitle.innerText = `The Journey of ${selectedKid.name}`;
     }
 
-    const navAvatar = document.getElementById('flow-avatar');
-    if (navAvatar && selectedKid.avatar) {
-        navAvatar.innerText = selectedKid.avatar;
-    }
-
+    updateStoryStartAvailability();
 }
 
 function selectKidAvatar(avatar, buttonEl = null) {
     selectedKid.avatar = avatar;
+    setupState.avatarSet = true;
 
     if (buttonEl) {
         document.querySelectorAll('.avatar-option').forEach(el => el.classList.remove('selected', 'selected-green', 'selected-red'));
@@ -377,14 +396,34 @@ function selectKidAvatar(avatar, buttonEl = null) {
         navAvatar.innerText = selectedKid.avatar;
     }
 
+    updateStoryStartAvailability();
 }
 
 function setKidAge(ageInput) {
+    if (String(ageInput).trim() === '') {
+        setupState.ageSet = false;
+        selectedKidAge = null;
+        const subtitle = document.getElementById('journey-card-subtitle');
+        if (subtitle) subtitle.innerText = 'Choose a name, avatar, and age to unlock the story.';
+        const startTokens = ['journey-age-start', 'story-age-start'];
+        startTokens.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.innerText = '--';
+        });
+        updateStoryStartAvailability();
+        return;
+    }
+
     const parsed = parseInt(ageInput, 10);
-    if (Number.isNaN(parsed)) return;
+    if (Number.isNaN(parsed)) {
+        setupState.ageSet = false;
+        updateStoryStartAvailability();
+        return;
+    }
 
     const age = Math.max(0, Math.min(18, parsed));
     selectedKidAge = age;
+    setupState.ageSet = true;
 
     const ageInputEl = document.getElementById('kid-age-input');
     if (ageInputEl && String(ageInputEl.value) !== String(age)) {
@@ -401,6 +440,8 @@ function setKidAge(ageInput) {
     if (subtitle) {
         subtitle.innerText = `Follow one person's life from age ${age} to age ${FINAL_AGE}. Make interactive financial choices and watch the consequences compound over decades.`;
     }
+
+    updateStoryStartAvailability();
 }
 
 // --- UI Interaction Handlers (Character) ---
@@ -423,6 +464,8 @@ function setCharInput(key, value, buttonEl = null, groupClass = null) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    updateStoryStartAvailability();
+
     // Character Sliders
     const c1Savings = document.getElementById('c1-savings');
     if(c1Savings) {

@@ -39,7 +39,7 @@
                 <div>
                     <p class="text-xs uppercase tracking-wide text-brand-100/70 mb-2">1) Pick Name</p>
                     <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-                        <button class="choice-card name-option selected text-gray-900" onclick="selectKidName('Fionoa', this)"><span class="kid-name">Fionoa</span></button>
+                        <button class="choice-card name-option text-gray-900" onclick="selectKidName('Fionoa', this)"><span class="kid-name">Fionoa</span></button>
                         <button class="choice-card name-option text-gray-900" onclick="selectKidName('Dhruv', this)"><span class="kid-name">Dhruv</span></button>
                         <button class="choice-card name-option text-gray-900" onclick="selectKidName('Kate', this)"><span class="kid-name">Kate</span></button>
                         <button class="choice-card name-option text-gray-900" onclick="selectKidName('Taylor', this)"><span class="kid-name">Taylor</span></button>
@@ -50,7 +50,7 @@
                 <div>
                     <p class="text-xs uppercase tracking-wide text-brand-100/70 mb-2">2) Pick Avatar</p>
                     <div class="grid grid-cols-4 md:grid-cols-8 gap-2 mb-3">
-                        <button class="choice-card avatar-option selected text-gray-900" onclick="selectKidAvatar('🦊', this)"><span class="kid-avatar">🦊</span></button>
+                        <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🦊', this)"><span class="kid-avatar">🦊</span></button>
                         <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🐯', this)"><span class="kid-avatar">🐯</span></button>
                         <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🦉', this)"><span class="kid-avatar">🦉</span></button>
                         <button class="choice-card avatar-option text-gray-900" onclick="selectKidAvatar('🐺', this)"><span class="kid-avatar">🐺</span></button>
@@ -91,16 +91,16 @@
                     <p class="text-xs uppercase tracking-wide text-brand-100/70 mb-2">3) Enter Age</p>
                     <div class="max-w-xs">
                         <label for="kid-age-input" class="sr-only">Current age</label>
-                        <input id="kid-age-input" type="number" min="0" max="18" value="13" oninput="setKidAge(this.value)" class="w-full rounded-lg border border-brand-300 bg-white text-gray-900 px-3 py-2 font-semibold" />
-                        <p class="text-xs text-brand-100/80 mt-1">Your story runs from age <span id="journey-age-start">13</span> to age 65.</p>
+                        <input id="kid-age-input" type="number" min="0" max="18" placeholder="Enter age (0-18)" oninput="setKidAge(this.value)" class="w-full rounded-lg border border-brand-300 bg-white text-gray-900 px-3 py-2 font-semibold" />
+                        <p class="text-xs text-brand-100/80 mt-1">Your story runs from age <span id="journey-age-start">--</span> to age 65.</p>
                     </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12 w-full mx-auto">
-                <button onclick="startFlow('character')" class="group relative bg-white bg-opacity-10 hover:bg-opacity-20 border border-brand-500 rounded-2xl p-8 text-left transition-all duration-300 transform hover:-translate-y-1">
+                <button id="start-story-btn" onclick="startFlow('character')" disabled class="group relative bg-white bg-opacity-10 border border-brand-500 rounded-2xl p-8 text-left transition-all duration-300 opacity-40 cursor-not-allowed">
                     <h3 id="journey-card-title" class="text-2xl font-bold mb-2">The Journey of ???</h3>
-                    <p id="journey-card-subtitle" class="text-brand-100 text-sm mb-4">Follow one person's life from age 13 to 65. Make interactive financial choices and watch the consequences compound over decades.</p>
+                    <p id="journey-card-subtitle" class="text-brand-100 text-sm mb-4">Choose a name, avatar, and age to unlock the story.</p>
                     <span class="inline-flex items-center text-brand-400 font-semibold group-hover:text-white transition-colors">Start the Story &rarr;</span>
                 </button>
 
@@ -357,7 +357,7 @@
                                 </div>
                             </section>
 
-                            <section class="handout-page">
+                            <section class="handout-page handout-major-break">
                                 <h3 class="text-2xl font-bold mb-2">Section A: The Capitalist's Handbook</h3>
                                 <p class="text-gray-700 mb-5">This section answers: What game are we playing? Before you choose investments, understand how money behaves in the real economy.</p>
 
