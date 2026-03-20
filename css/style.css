@@ -208,6 +208,24 @@ input[type=range]::-webkit-slider-runnable-track {
         break-inside: avoid;
     }
 
+    #flow-handout h3,
+    #flow-handout h4 {
+        page-break-after: avoid;
+        break-after: avoid;
+    }
+
+    #flow-handout p,
+    #flow-handout ul,
+    #flow-handout li {
+        orphans: 3;
+        widows: 3;
+    }
+
+    #flow-handout .p-4.rounded-lg.border {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
     .handout-page:last-child {
         page-break-after: auto;
         break-after: auto;
