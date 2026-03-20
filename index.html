@@ -86,12 +86,21 @@
                         </div>
                     </details>
                 </div>
+
+                <div>
+                    <p class="text-xs uppercase tracking-wide text-brand-100/70 mb-2">3) Enter Age</p>
+                    <div class="max-w-xs">
+                        <label for="kid-age-input" class="sr-only">Current age</label>
+                        <input id="kid-age-input" type="number" min="0" max="18" value="13" oninput="setKidAge(this.value)" class="w-full rounded-lg border border-brand-300 bg-white text-gray-900 px-3 py-2 font-semibold" />
+                        <p class="text-xs text-brand-100/80 mt-1">Your story runs from age <span id="journey-age-start">13</span> to age 65.</p>
+                    </div>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12 w-full mx-auto">
                 <button onclick="startFlow('character')" class="group relative bg-white bg-opacity-10 hover:bg-opacity-20 border border-brand-500 rounded-2xl p-8 text-left transition-all duration-300 transform hover:-translate-y-1">
                     <h3 id="journey-card-title" class="text-2xl font-bold mb-2">The Journey of ???</h3>
-                    <p class="text-brand-100 text-sm mb-4">Follow one person's life from age 15 to 65. Make interactive financial choices and watch the consequences compound over decades.</p>
+                    <p id="journey-card-subtitle" class="text-brand-100 text-sm mb-4">Follow one person's life from age 13 to 65. Make interactive financial choices and watch the consequences compound over decades.</p>
                     <span class="inline-flex items-center text-brand-400 font-semibold group-hover:text-white transition-colors">Start the Story &rarr;</span>
                 </button>
 
@@ -114,39 +123,29 @@
 
     <div id="app-container" class="hidden">
         <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md border-b border-gray-200 z-50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between h-16 items-center">
-                <div class="flex items-center cursor-pointer hover:text-brand-600 transition-colors" onclick="location.reload()">
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center">
+                <div class="z-10 flex items-center cursor-pointer hover:text-brand-600 transition-colors" onclick="location.reload()">
                     <span class="font-semibold text-gray-900 text-sm">&larr; Back to Menu</span>
                 </div>
-                <div class="flex items-center gap-3">
-                    <div id="flow-avatar" class="hidden w-8 h-8 rounded-full bg-brand-100 text-brand-900 flex items-center justify-center text-lg">❓</div>
-                    <div id="flow-title" class="font-bold text-lg text-brand-900">Flow Title</div>
+                <div class="absolute inset-0 flex items-center justify-center gap-4 pointer-events-none">
+                    <div id="flow-avatar" class="hidden w-14 h-14 rounded-full bg-brand-100 text-brand-900 items-center justify-center text-3xl md:text-4xl">❓</div>
+                    <div id="flow-title" class="font-extrabold text-3xl md:text-4xl text-brand-900">Flow Title</div>
                 </div>
             </div>
         </nav>
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24">
             <div class="flex flex-col lg:flex-row gap-12 relative">
                 <div class="w-full lg:w-5/12 pb-32">
-                    <div id="hero-badge" class="hidden sticky top-20 z-20 mb-4 bg-white/95 backdrop-blur border border-brand-200 rounded-xl px-4 py-3 shadow-sm">
-                        <div class="flex items-center gap-3">
-                            <div id="hero-badge-avatar" class="w-10 h-10 rounded-full bg-brand-100 text-brand-900 flex items-center justify-center text-2xl">❓</div>
-                            <div>
-                                <p class="text-xs uppercase tracking-wide text-gray-500">Story Hero</p>
-                                <p id="hero-badge-name" class="text-lg font-bold text-brand-900">???</p>
-                            </div>
-                        </div>
-                    </div>
-
                     <div id="flow-character" class="hidden">
                         <div class="step" data-step="c1">
                             <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Chapter 1: The Engine Starts</h2>
-                            <p class="text-lg text-gray-700 mb-6">Meet <span data-char-name>???</span>. At 15, <span data-char-name>???</span> starts saving from a first job.</p>
+                            <p class="text-lg text-gray-700 mb-6">Meet <span data-char-name>???</span>. At age <span id="story-age-start">13</span>, <span data-char-name>???</span> starts saving from a first job.</p>
                             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                                <label class="block text-sm font-bold text-gray-900 mb-2">How much should Alex save per month?</label>
+                                <label class="block text-sm font-bold text-gray-900 mb-2">How much should <span data-char-name>???</span> save per month?</label>
                                 <div class="flex items-center space-x-4 mb-2">
-                                    <input type="range" id="c1-savings" min="0" max="1000" step="50" value="100">
-                                    <span id="c1-savings-val" class="font-mono font-bold text-brand-600 w-16 text-right">$100</span>
+                                    <input type="range" id="c1-savings" min="0" max="1000" step="50" value="0">
+                                    <span id="c1-savings-val" class="font-mono font-bold text-brand-600 w-16 text-right">$0</span>
                                 </div>
                             </div>
                         </div>
@@ -290,121 +289,122 @@
                             <section class="handout-page">
                                 <div class="text-center mb-8 border-b-2 border-brand-900 pb-5">
                                     <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight mb-2">The Algebra of Wealth</h1>
-                                    <h2 class="text-xl text-brand-600 font-medium">Student Study Guide (Grades 8-10)</h2>
+                                    <h2 class="text-xl text-brand-600 font-medium">Student Study Guide: Diversification</h2>
                                 </div>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div>
-                                        <h3 class="text-2xl font-bold mb-3">What this guide is for</h3>
-                                        <p class="text-gray-700 mb-3">This guide helps you understand the big ideas behind investing and wealth building. You do not need to memorize everything. Focus on patterns and decision rules.</p>
-                                        <ul class="list-disc pl-5 text-gray-700 space-y-1">
-                                            <li>Money can grow while you sleep (capital).</li>
-                                            <li>Time is your biggest advantage.</li>
-                                            <li>Fees quietly destroy long-term outcomes.</li>
-                                            <li>Diversification helps you survive bad luck.</li>
-                                        </ul>
+                                <div class="bg-brand-50 rounded-xl p-5 border border-brand-100 mb-6">
+                                    <h4 class="font-bold text-brand-900 mb-2">Book Formula</h4>
+                                    <p class="font-mono text-lg text-center py-3">Wealth = Focus + (Stoicism x Time x Diversification)</p>
+                                    <p class="text-sm text-gray-700">This guide matches the two diversification sections from the book and pulls out the most important highlights.</p>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-gray-700">
+                                    <div class="p-4 rounded-lg border border-gray-200 bg-gray-50">
+                                        <p class="font-semibold mb-1">Section A</p>
+                                        <p>Diversification: The Capitalist's Handbook</p>
                                     </div>
-                                    <div class="bg-brand-50 rounded-xl p-5 border border-brand-100">
-                                        <h4 class="font-bold text-brand-900 mb-2">Core Equation</h4>
-                                        <p class="font-mono text-lg text-center py-3">Wealth = Focus + (Stoicism x Time x Diversification)</p>
-                                        <p class="text-sm text-gray-700">Think of this as a system, not a single trick. Most wealth comes from consistent habits repeated over years.</p>
+                                    <div class="p-4 rounded-lg border border-gray-200 bg-gray-50">
+                                        <p class="font-semibold mb-1">Section B</p>
+                                        <p>Diversification: Basic Principles of Investing</p>
                                     </div>
                                 </div>
                             </section>
 
                             <section class="handout-page">
-                                <h3 class="text-2xl font-bold mb-4">Page 2: The Capitalist's Handbook</h3>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div>
-                                        <h4 class="font-semibold text-lg mb-2">Capital vs. Labor</h4>
-                                        <p class="text-gray-700 mb-2"><strong>Labor</strong> means trading your time for money (a paycheck). You only have 24 hours per day.</p>
-                                        <p class="text-gray-700"><strong>Capital</strong> means owning assets (stocks, bonds, real estate) that can grow and produce returns without your hourly effort.</p>
+                                <h3 class="text-2xl font-bold mb-2">Section A: The Capitalist's Handbook</h3>
+                                <p class="text-gray-700 mb-5">This section explains the system you are investing in.</p>
+
+                                <div class="space-y-5">
+                                    <div class="p-4 rounded-lg border border-gray-200">
+                                        <h4 class="font-semibold text-lg mb-2">Subsection: Capital vs. Labor</h4>
+                                        <p class="text-gray-700 text-sm mb-2"><strong>Labor</strong>: you trade your time for money. There is a hard ceiling (hours in a day).</p>
+                                        <p class="text-gray-700 text-sm"> <strong>Capital</strong>: your money owns productive assets and can compound over time.</p>
+                                        <p class="mt-2 text-sm"><strong>Highlight:</strong> Wealth grows when labor surplus (savings) gets converted into capital.</p>
                                     </div>
-                                    <div>
-                                        <h4 class="font-semibold text-lg mb-2">Inflation (the silent leak)</h4>
-                                        <p class="text-gray-700 mb-2">If your money earns 0% and prices rise 3%, your buying power falls.</p>
+
+                                    <div class="p-4 rounded-lg border border-gray-200">
+                                        <h4 class="font-semibold text-lg mb-2">Subsection: Inflation</h4>
+                                        <p class="text-gray-700 text-sm mb-2">Inflation slowly lowers what your money can buy.</p>
                                         <div class="mini-chart p-3 text-xs text-gray-600">
-                                            <p class="mb-2">$100 today at 3% inflation</p>
-                                            <p>After 10 years: ~ $74 buying power</p>
-                                            <p>After 20 years: ~ $55 buying power</p>
+                                            <p class="mb-2">Example at 3% inflation:</p>
+                                            <p>$100 today -> about $74 buying power in 10 years</p>
+                                            <p>$100 today -> about $55 buying power in 20 years</p>
                                         </div>
+                                        <p class="mt-2 text-sm"><strong>Highlight:</strong> Cash alone is not a long-term strategy.</p>
                                     </div>
-                                </div>
-                            </section>
 
-                            <section class="handout-page">
-                                <h3 class="text-2xl font-bold mb-4">Page 3: Asset Classes in Plain Language</h3>
-                                <div class="space-y-4">
-                                    <div class="p-4 rounded-lg border border-gray-200 bg-gray-50">
-                                        <h4 class="font-bold">Stocks (Equities)</h4>
-                                        <p class="text-gray-700 text-sm">You own a tiny piece of a company. If the company grows, your piece can become more valuable.</p>
-                                    </div>
-                                    <div class="p-4 rounded-lg border border-gray-200 bg-gray-50">
-                                        <h4 class="font-bold">Bonds (Fixed Income)</h4>
-                                        <p class="text-gray-700 text-sm">You lend money to a company or government, and they pay interest. Usually less exciting, but often steadier.</p>
-                                    </div>
-                                    <div class="p-4 rounded-lg border border-gray-200 bg-gray-50">
-                                        <h4 class="font-bold">Real Estate</h4>
-                                        <p class="text-gray-700 text-sm">Owning property. Can grow in value and provide income, but requires management and carries risks too.</p>
-                                    </div>
-                                </div>
-                            </section>
-
-                            <section class="handout-page">
-                                <h3 class="text-2xl font-bold mb-4">Page 4: Compounding and Time Value of Money</h3>
-                                <p class="text-gray-700 mb-4">Compounding means returns earning returns. It starts slow, then bends upward.</p>
-                                <div class="mini-chart mb-4">
-                                    <div class="mini-line">
-                                        <svg viewBox="0 0 100 10" preserveAspectRatio="none">
-                                            <path d="M0,9 C20,9 35,8 50,7 C65,6 80,4 100,1" fill="none" stroke="#0ea5e9" stroke-width="1.5"/>
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                                     <div class="p-4 rounded-lg border border-gray-200">
-                                        <p class="font-semibold mb-1">Start earlier</p>
-                                        <p class="text-gray-700">More years compounding, often far more final wealth.</p>
-                                    </div>
-                                    <div class="p-4 rounded-lg border border-gray-200">
-                                        <p class="font-semibold mb-1">Start later</p>
-                                        <p class="text-gray-700">You must save much more to catch up.</p>
-                                    </div>
-                                </div>
-                            </section>
-
-                            <section class="handout-page">
-                                <h3 class="text-2xl font-bold mb-4">Page 5: Fees and Diversification</h3>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div>
-                                        <h4 class="font-semibold text-lg mb-2">Fees: the quiet drag</h4>
-                                        <p class="text-gray-700 text-sm mb-2">A fee is not just one-time. It repeats every year and reduces your compounding base.</p>
+                                        <h4 class="font-semibold text-lg mb-2">Subsection: Asset Classes</h4>
                                         <ul class="list-disc pl-5 text-sm text-gray-700 space-y-1">
-                                            <li>Low fee + long time = huge advantage</li>
-                                            <li>High fee + long time = huge wealth loss</li>
+                                            <li><strong>Stocks (Equities):</strong> ownership in corporations</li>
+                                            <li><strong>Bonds (Fixed Income):</strong> lending for interest</li>
+                                            <li><strong>Real Estate:</strong> property ownership, often with leverage</li>
                                         </ul>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-semibold text-lg mb-2">Diversification: your safety armor</h4>
-                                        <p class="text-gray-700 text-sm">If one company crashes and you own only that company, your portfolio can collapse. If you own many companies, one failure hurts less.</p>
+                                        <p class="mt-2 text-sm"><strong>Highlight:</strong> Asset classes play different roles in growth and stability.</p>
                                     </div>
                                 </div>
                             </section>
 
                             <section class="handout-page">
-                                <h3 class="text-2xl font-bold mb-4">Page 6: Decision Checklist + Reflection</h3>
-                                <div class="space-y-4 text-gray-700">
-                                    <div class="p-4 border border-gray-200 rounded-lg">
-                                        <h4 class="font-semibold mb-2">Before any investing decision, ask:</h4>
-                                        <ul class="list-disc pl-5 text-sm space-y-1">
-                                            <li>Am I concentrating too much in one bet?</li>
-                                            <li>What fee am I paying, and for what?</li>
-                                            <li>Am I giving this plan enough time?</li>
-                                            <li>Is this a long-term strategy or just hype?</li>
-                                        </ul>
+                                <h3 class="text-2xl font-bold mb-2">Section B: Basic Principles of Investing</h3>
+                                <p class="text-gray-700 mb-5">This section explains the mechanics behind outcomes.</p>
+
+                                <div class="space-y-5">
+                                    <div class="p-4 rounded-lg border border-gray-200">
+                                        <h4 class="font-semibold text-lg mb-2">Subsection: Risk and Return</h4>
+                                        <p class="text-sm text-gray-700">Higher expected return usually means higher volatility and uncertainty.</p>
+                                        <p class="mt-2 text-sm"><strong>Highlight:</strong> “High return, low risk” claims should trigger skepticism.</p>
                                     </div>
-                                    <div class="p-4 border border-brand-200 rounded-lg bg-brand-50">
-                                        <h4 class="font-semibold mb-2">Write your rule:</h4>
-                                        <p class="text-sm">"When markets are noisy, I will __________ because long-term wealth is built by __________."</p>
+
+                                    <div class="p-4 rounded-lg border border-gray-200">
+                                        <h4 class="font-semibold text-lg mb-2">Subsection: Time in the Market</h4>
+                                        <p class="text-sm text-gray-700">The compounding curve gets steeper later. Staying invested matters.</p>
+                                        <div class="mini-chart mt-2">
+                                            <div class="mini-line">
+                                                <svg viewBox="0 0 100 10" preserveAspectRatio="none">
+                                                    <path d="M0,9 C25,9 40,8 60,6 C75,5 90,3 100,1" fill="none" stroke="#0ea5e9" stroke-width="1.5"/>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <p class="mt-2 text-sm"><strong>Highlight:</strong> Time is a multiplier.</p>
                                     </div>
+
+                                    <div class="p-4 rounded-lg border border-gray-200">
+                                        <h4 class="font-semibold text-lg mb-2">Subsection: Tyranny of Fees</h4>
+                                        <p class="text-sm text-gray-700">Fees reduce your returns every year, which compounds into a large long-term drag.</p>
+                                        <p class="mt-2 text-sm"><strong>Highlight:</strong> Small annual fees can create huge lifetime differences.</p>
+                                    </div>
+
+                                    <div class="p-4 rounded-lg border border-gray-200">
+                                        <h4 class="font-semibold text-lg mb-2">Subsection: Diversification</h4>
+                                        <p class="text-sm text-gray-700">Owning many companies lowers the impact of one bad outcome.</p>
+                                        <p class="mt-2 text-sm"><strong>Highlight:</strong> Diversification protects the compounding engine.</p>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="handout-page">
+                                <h3 class="text-2xl font-bold mb-3">Quick Highlights (One-Page Review)</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                                    <div class="p-4 rounded-lg border border-gray-200 bg-gray-50">
+                                        <p class="font-semibold">1) Start as early as possible</p>
+                                        <p class="text-gray-700 mt-1">More years = bigger compounding advantage.</p>
+                                    </div>
+                                    <div class="p-4 rounded-lg border border-gray-200 bg-gray-50">
+                                        <p class="font-semibold">2) Keep fees low</p>
+                                        <p class="text-gray-700 mt-1">Fee drag grows over decades.</p>
+                                    </div>
+                                    <div class="p-4 rounded-lg border border-gray-200 bg-gray-50">
+                                        <p class="font-semibold">3) Avoid concentrated bets</p>
+                                        <p class="text-gray-700 mt-1">One failure can break your progress.</p>
+                                    </div>
+                                    <div class="p-4 rounded-lg border border-gray-200 bg-gray-50">
+                                        <p class="font-semibold">4) Build a repeatable system</p>
+                                        <p class="text-gray-700 mt-1">Consistency beats excitement.</p>
+                                    </div>
+                                </div>
+
+                                <div class="mt-6 p-4 border border-brand-200 rounded-lg bg-brand-50">
+                                    <h4 class="font-semibold mb-2">Reflection Prompt</h4>
+                                    <p class="text-sm">"My long-term investing rule is: ____________________________. I chose this rule because ____________________________."</p>
                                 </div>
                             </section>
                         </div>

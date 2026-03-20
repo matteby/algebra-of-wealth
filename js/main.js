@@ -8,6 +8,9 @@ let selectedKid = {
     avatar: '❓'
 };
 
+let selectedKidAge = 13;
+const FINAL_AGE = 65;
+
 const defaultKidAvatar = {
     Fionoa: '🦊',
     Dhruv: '🐯',
@@ -18,7 +21,7 @@ const defaultKidAvatar = {
 
 // Character Journey State (Alex)
 const charState = {
-    pmt: 100,
+    pmt: 0,
     assetClass: 'none', // 'none' (0%), 'cash' (2%) vs 'sp500' (8%)
     fee: 0.05, // 0.05% vs 1.5%
     portfolio: 'index', // 'index' (S&P), 'mixed' (50/50), 'concentrated' (Enron)
@@ -132,7 +135,6 @@ function startFlow(flowType) {
     if (handout) handout.style.display = 'none';
     
     const vizContainer = document.getElementById('sticky-viz-container');
-    const heroBadge = document.getElementById('hero-badge');
     if (vizContainer) {
         if (flowType === 'handout') {
             vizContainer.classList.remove('lg:block');
@@ -147,14 +149,8 @@ function startFlow(flowType) {
         const avatar = document.getElementById('flow-avatar');
         if (avatar) {
             avatar.classList.remove('hidden');
+            avatar.classList.add('flex');
             avatar.innerText = selectedKid.avatar;
-        }
-        if (heroBadge) {
-            heroBadge.classList.remove('hidden');
-            const badgeName = document.getElementById('hero-badge-name');
-            const badgeAvatar = document.getElementById('hero-badge-avatar');
-            if (badgeName) badgeName.innerText = selectedKid.name;
-            if (badgeAvatar) badgeAvatar.innerText = selectedKid.avatar;
         }
         document.getElementById('flow-character').style.display = 'block';
         setupIntersectionObserver('flow-character');
@@ -163,8 +159,10 @@ function startFlow(flowType) {
     } else if(flowType === 'concept') {
         document.getElementById('flow-title').innerText = "The Concept Sandbox";
         const avatar = document.getElementById('flow-avatar');
-        if (avatar) avatar.classList.add('hidden');
-        if (heroBadge) heroBadge.classList.add('hidden');
+        if (avatar) {
+            avatar.classList.add('hidden');
+            avatar.classList.remove('flex');
+        }
         document.getElementById('flow-concept').style.display = 'block';
         setupIntersectionObserver('flow-concept');
         initChart(); // Start with timeseries
@@ -172,8 +170,10 @@ function startFlow(flowType) {
     } else if(flowType === 'handout') {
         document.getElementById('flow-title').innerText = "Printable Study Guide";
         const avatar = document.getElementById('flow-avatar');
-        if (avatar) avatar.classList.add('hidden');
-        if (heroBadge) heroBadge.classList.add('hidden');
+        if (avatar) {
+            avatar.classList.add('hidden');
+            avatar.classList.remove('flex');
+        }
         if (handout) handout.style.display = 'block';
     }
     
@@ -205,8 +205,6 @@ function selectKidName(name, buttonEl = null) {
         navAvatar.innerText = selectedKid.avatar;
     }
 
-    const badgeName = document.getElementById('hero-badge-name');
-    if (badgeName) badgeName.innerText = selectedKid.name;
 }
 
 function selectKidAvatar(avatar, buttonEl = null) {
@@ -222,8 +220,30 @@ function selectKidAvatar(avatar, buttonEl = null) {
         navAvatar.innerText = selectedKid.avatar;
     }
 
-    const badgeAvatar = document.getElementById('hero-badge-avatar');
-    if (badgeAvatar) badgeAvatar.innerText = selectedKid.avatar;
+}
+
+function setKidAge(ageInput) {
+    const parsed = parseInt(ageInput, 10);
+    if (Number.isNaN(parsed)) return;
+
+    const age = Math.max(0, Math.min(18, parsed));
+    selectedKidAge = age;
+
+    const ageInputEl = document.getElementById('kid-age-input');
+    if (ageInputEl && String(ageInputEl.value) !== String(age)) {
+        ageInputEl.value = age;
+    }
+
+    const startTokens = ['journey-age-start', 'story-age-start'];
+    startTokens.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = String(age);
+    });
+
+    const subtitle = document.getElementById('journey-card-subtitle');
+    if (subtitle) {
+        subtitle.innerText = `Follow one person's life from age ${age} to age ${FINAL_AGE}. Make interactive financial choices and watch the consequences compound over decades.`;
+    }
 }
 
 // --- UI Interaction Handlers (Character) ---
@@ -365,9 +385,10 @@ function initChart() {
 function updateCharacterChart() {
     if(!chartInstance) return;
 
-    const years = 50; // Age 15 to 65
-    const labels = Array.from({length: years + 1}, (_, i) => `Age ${15 + i}`);
-    const crashAge = 45;
+    const startAge = selectedKidAge;
+    const years = FINAL_AGE - startAge;
+    const labels = Array.from({length: years + 1}, (_, i) => `Age ${startAge + i}`);
+    const crashAge = Math.max(startAge + 1, 45);
 
     // Calculate different paths
     const rate = charState.assetClass === 'sp500' ? 8 : (charState.assetClass === 'cash' ? 2 : 0);
@@ -375,11 +396,11 @@ function updateCharacterChart() {
     const pmt = charState.pmt;
     
     // Baseline: Cash Contributed
-    const dataContrib = calcCompoundPath(0, pmt, 0, 0, 15, 65);
+    const dataContrib = calcCompoundPath(0, pmt, 0, 0, startAge, FINAL_AGE);
     // Ideal Path: S&P, no bad fees, no crash
-    const dataIdeal = calcCompoundPath(0, pmt, 8, 0.05, 15, 65);
+    const dataIdeal = calcCompoundPath(0, pmt, 8, 0.05, startAge, FINAL_AGE);
     // Current Path up to the crash point
-    let dataCurrent = calcCompoundPath(0, pmt, rate, fee, 15, 65);
+    let dataCurrent = calcCompoundPath(0, pmt, rate, fee, startAge, FINAL_AGE);
 
     chartInstance.data.labels = labels;
 
@@ -388,7 +409,7 @@ function updateCharacterChart() {
 
     if(currentStep === 'c1') {
         // Just show savings growing linearly
-        updateScoreboard(false);
+        updateScoreboard(true, `Final Wealth at Age ${FINAL_AGE}`, dataContrib[years], '', false);
         chartInstance.data.datasets = [
             { label: 'Total Cash Saved', data: dataContrib, borderColor: '#9ca3af', backgroundColor: 'rgba(156, 163, 175, 0.1)', fill: true, tension: 0 }
         ];
@@ -407,8 +428,8 @@ function updateCharacterChart() {
         // Introduce Fees (Assuming S&P 500 at 8%)
         // We ALWAYS show both the "Ideal" (0.05%) and the "Active" (1.5%) line so the gap is obvious.
         // We highlight the one the user selected.
-        const dataActive = calcCompoundPath(0, pmt, 8, 1.5, 15, 65);
-        const dataPassive = calcCompoundPath(0, pmt, 8, 0.05, 15, 65);
+        const dataActive = calcCompoundPath(0, pmt, 8, 1.5, startAge, FINAL_AGE);
+        const dataPassive = calcCompoundPath(0, pmt, 8, 0.05, startAge, FINAL_AGE);
 
         const isActiveSelected = charState.fee === 1.5;
         const wealthLost = dataPassive[years] - dataActive[years];
@@ -459,20 +480,20 @@ function updateCharacterChart() {
         // If c5, we crash at 45 and show the immediate drop.
         // If c6, we show the recovery to 65.
         
-        let crashData = calcCompoundPath(0, pmt, 8, charState.fee, 15, 65, crashAge, crashPct);
+        let crashData = calcCompoundPath(0, pmt, 8, charState.fee, startAge, FINAL_AGE, crashAge, crashPct);
         
         // Hide future data based on step
         if (currentStep === 'c4') {
-            crashData = crashData.map((v, i) => i <= (crashAge - 15) ? v : null); // Cut off before crash
+            crashData = crashData.map((v, i) => i <= (crashAge - startAge) ? v : null); // Cut off before crash
         } else if (currentStep === 'c5') {
-            crashData = crashData.map((v, i) => i <= (crashAge - 14) ? v : null); // Cut off immediately after crash (age 46)
+            crashData = crashData.map((v, i) => i <= (crashAge - startAge + 1) ? v : null); // Cut off immediately after crash
         }
 
         // Always show the ideal "No Crash / Diversified" path as a ghost line for comparison if c5/c6
         const datasets = [];
-        let ghostData = calcCompoundPath(0, pmt, 8, charState.fee, 15, 65, crashAge, 0.40); // Standard market drop
+        let ghostData = calcCompoundPath(0, pmt, 8, charState.fee, startAge, FINAL_AGE, crashAge, 0.40); // Standard market drop
         if (currentStep !== 'c4') {
-            if (currentStep === 'c5') ghostData = ghostData.map((v, i) => i <= (crashAge - 14) ? v : null);
+            if (currentStep === 'c5') ghostData = ghostData.map((v, i) => i <= (crashAge - startAge + 1) ? v : null);
             
             datasets.push({
                 label: 'Market Baseline (Diversified)', data: ghostData, borderColor: '#d1d5db', borderDash: [5,5], fill: false, tension: 0.4
@@ -492,8 +513,8 @@ function updateCharacterChart() {
         if (currentStep === 'c5' || currentStep === 'c6') {
             chartInstance.options.plugins.annotation.annotations = {
                 line1: {
-                    type: 'line', xMin: 'Age 45', xMax: 'Age 45', borderColor: '#ef4444', borderWidth: 2, borderDash: [5,5],
-                    label: { display: true, content: 'Age 45: Market Crash', position: 'start' }
+                    type: 'line', xMin: `Age ${crashAge}`, xMax: `Age ${crashAge}`, borderColor: '#ef4444', borderWidth: 2, borderDash: [5,5],
+                    label: { display: true, content: `Age ${crashAge}: Market Crash`, position: 'start' }
                 }
             };
         }
