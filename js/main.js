@@ -140,6 +140,9 @@ function updateCharDiversificationReadout() {
     const impactEl = document.getElementById('c4-impact-val');
     const c5ImpactEl = document.getElementById('c5-impact-val');
     const c5Copy = document.getElementById('c5-impact-copy');
+    const c5Panel = document.getElementById('c5-panel');
+    const c5Title = document.getElementById('c5-title');
+    const c5Subtitle = document.getElementById('c5-subtitle');
 
     if (weightEl) weightEl.innerText = weightPct.toFixed(weightPct >= 1 ? 0 : 2).replace('.00', '') + '%';
 
@@ -155,6 +158,31 @@ function updateCharDiversificationReadout() {
 
     if (c5Copy) {
         c5Copy.className = impactPct > 0 ? 'text-green-900' : (impactPct < 0 ? 'text-red-900' : 'text-gray-900');
+    }
+
+    if (c5Panel) {
+        c5Panel.className = impactPct > 0
+            ? 'rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-900'
+            : (impactPct < 0
+                ? 'rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-900'
+                : 'rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-900');
+    }
+
+    if (c5Title) {
+        c5Title.innerText = impactPct > 0 ? 'Chapter 5: Upside Shock' : (impactPct < 0 ? 'Chapter 5: Downside Shock' : 'Chapter 5: Event Shock');
+        c5Title.className = impactPct > 0
+            ? 'text-4xl font-extrabold text-green-700 mb-4'
+            : (impactPct < 0
+                ? 'text-4xl font-extrabold text-red-600 mb-4'
+                : 'text-4xl font-extrabold text-gray-900 mb-4');
+    }
+
+    if (c5Subtitle) {
+        c5Subtitle.innerText = impactPct > 0
+            ? `At age ${Math.max(selectedKidAge + 1, 45)}, one company surges. Your Chapter 4 exposure determines how much the portfolio jumps.`
+            : (impactPct < 0
+                ? `At age ${Math.max(selectedKidAge + 1, 45)}, one company takes a major hit. Your Chapter 4 exposure determines how hard the portfolio falls.`
+                : `At age ${Math.max(selectedKidAge + 1, 45)}, one major event hits. Your Chapter 4 exposure determines the portfolio impact.`);
     }
 }
 
