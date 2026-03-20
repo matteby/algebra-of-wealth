@@ -500,6 +500,20 @@
                             </div>
                         </div>
 
+                        <div id="risk-controls" class="hidden w-full bg-white p-4 rounded-2xl shadow-xl border border-gray-100">
+                            <div class="flex items-center justify-between gap-3 mb-3">
+                                <p class="text-xs uppercase tracking-wide font-bold text-gray-500">Risk View</p>
+                                <div class="flex gap-2">
+                                    <button id="risk-mode-story" class="choice-card selected text-xs px-3 py-2" onclick="setRiskMode('story', this)">One Story</button>
+                                    <button id="risk-mode-typical" class="choice-card text-xs px-3 py-2" onclick="setRiskMode('typical', this)">Typical Outcomes</button>
+                                </div>
+                            </div>
+                            <div class="flex gap-2 mb-2">
+                                <button id="risk-roll-btn" class="choice-card text-xs px-3 py-2" onclick="rollRiskDraw()">Roll the Dice</button>
+                            </div>
+                            <p id="risk-roll-status" class="text-xs text-gray-600">Switch to Typical Outcomes to roll random draws.</p>
+                        </div>
+
                         <div class="w-full bg-white p-6 rounded-2xl shadow-xl border border-gray-100 h-[50vh] flex items-center justify-center">
                             <canvas id="mainChart"></canvas>
                         </div>

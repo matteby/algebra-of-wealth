@@ -33,6 +33,12 @@ const charState = {
     companyOutcomePct: -100
 };
 
+const riskState = {
+    mode: 'story',
+    lastRoll: null,
+    lastRollPercentile: null
+};
+
 // Concept Sandbox State
 const conceptState = {
     pmt: 500,
@@ -165,6 +171,11 @@ function updateJourneyLedger() {
     setClassName('jl-row-event', stepIdx >= 4 ? 'flex justify-between' : 'hidden justify-between');
 }
 
+function refreshCharacterUI() {
+    updateJourneyLedger();
+    updateRiskControlsVisibility();
+}
+
 function setConceptOutcome(outcomePct, buttonEl = null) {
     conceptState.companyOutcomePct = outcomePct;
     if (buttonEl) {
@@ -210,6 +221,141 @@ function getCharBaseRate() {
 
 function getCharShockPct() {
     return (charState.companyOutcomePct / 100) * (1 / charState.companies);
+}
+
+function getRiskStdByCompanies(companies) {
+    if (companies <= 1) return 1.10;
+    if (companies <= 10) return 0.40;
+    if (companies <= 50) return 0.16;
+    return 0.06;
+}
+
+function randomNormal() {
+    let u = 0;
+    let v = 0;
+    while (u === 0) u = Math.random();
+    while (v === 0) v = Math.random();
+    return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+}
+
+function stdNormalCDF(x) {
+    const t = 1 / (1 + 0.2316419 * Math.abs(x));
+    const d = 0.3989423 * Math.exp(-x * x / 2);
+    let p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
+    if (x > 0) p = 1 - p;
+    return p;
+}
+
+function sampleSingleCompanyReturn() {
+    // Geometric Brownian style single-stock annual draw.
+    // Median is close to market-like return, but tails are wide.
+    const mu = Math.log(1.08);
+    const sigma = 0.95;
+    const z = randomNormal();
+    const gross = Math.exp(mu - 0.5 * sigma * sigma + sigma * z);
+    const cappedGross = Math.max(0, Math.min(9, gross));
+    const returnPct = (cappedGross - 1) * 100;
+    const percentile = stdNormalCDF(z) * 100;
+    return { returnPct, percentile };
+}
+
+function singleCompanyReturnAtPercentile(z) {
+    const mu = Math.log(1.08);
+    const sigma = 0.95;
+    const gross = Math.exp(mu - 0.5 * sigma * sigma + sigma * z);
+    const cappedGross = Math.max(0, Math.min(9, gross));
+    return (cappedGross - 1) * 100;
+}
+
+function percentileImpact(companies, z) {
+    const outcome = singleCompanyReturnAtPercentile(z);
+    return outcome / companies;
+}
+
+function buildPathFromImpactPct(startAge, rate, fee, pmt, impactPct) {
+    const crashAge = Math.max(startAge + 1, 45);
+    return calcCompoundPath(0, pmt, rate, fee, startAge, FINAL_AGE, crashAge, -(impactPct / 100));
+}
+
+function getRollMedianFinal(startAge, rate, fee, pmt) {
+    const curves = getRiskCurves(startAge, rate, fee, pmt);
+    const years = FINAL_AGE - startAge;
+    return curves.medianPath[years];
+}
+
+function getRiskCurves(startAge, rate, fee, pmt) {
+    const medianImpact = percentileImpact(charState.companies, 0);
+    const p10Impact = percentileImpact(charState.companies, -1.2816);
+    const p90Impact = percentileImpact(charState.companies, 1.2816);
+
+    return {
+        medianImpact,
+        p10Impact,
+        p90Impact,
+        medianPath: buildPathFromImpactPct(startAge, rate, fee, pmt, medianImpact),
+        p10Path: buildPathFromImpactPct(startAge, rate, fee, pmt, p10Impact),
+        p90Path: buildPathFromImpactPct(startAge, rate, fee, pmt, p90Impact)
+    };
+}
+
+function setRiskMode(mode) {
+    riskState.mode = mode;
+
+    const storyBtn = document.getElementById('risk-mode-story');
+    const typicalBtn = document.getElementById('risk-mode-typical');
+    if (storyBtn && typicalBtn) {
+        storyBtn.classList.remove('selected', 'selected-green');
+        typicalBtn.classList.remove('selected', 'selected-green');
+        if (mode === 'story') storyBtn.classList.add('selected');
+        else typicalBtn.classList.add('selected-green');
+    }
+
+    updateRiskControlsVisibility();
+    updateCharacterChart();
+}
+
+function updateRiskControlsVisibility() {
+    const controls = document.getElementById('risk-controls');
+    if (!controls) return;
+
+    const inRiskChapters = currentFlow === 'character' && (currentStep === 'c4' || currentStep === 'c5' || currentStep === 'c6');
+    if (!inRiskChapters) {
+        controls.classList.add('hidden');
+        return;
+    }
+
+    controls.classList.remove('hidden');
+
+    const rollBtn = document.getElementById('risk-roll-btn');
+    const status = document.getElementById('risk-roll-status');
+    const disabled = riskState.mode !== 'typical';
+
+    [rollBtn].forEach(btn => {
+        if (!btn) return;
+        btn.disabled = disabled;
+        if (disabled) btn.classList.add('opacity-40', 'cursor-not-allowed');
+        else btn.classList.remove('opacity-40', 'cursor-not-allowed');
+    });
+
+    if (status) {
+        if (disabled) {
+            status.innerText = 'Switch to Typical Outcomes to roll random draws.';
+        } else if (riskState.lastRoll !== null && riskState.lastRollPercentile !== null) {
+            status.innerText = `Last roll impact: ${(riskState.lastRoll > 0 ? '+' : '') + riskState.lastRoll.toFixed(1)}% | Percentile: ${Math.round(riskState.lastRollPercentile)}th`;
+        } else {
+            status.innerText = 'Roll to sample one possible outcome from the distribution.';
+        }
+    }
+}
+
+function rollRiskDraw() {
+    if (riskState.mode !== 'typical') return;
+
+    const draw = sampleSingleCompanyReturn();
+    riskState.lastRoll = draw.returnPct / charState.companies;
+    riskState.lastRollPercentile = draw.percentile;
+    updateRiskControlsVisibility();
+    updateCharacterChart();
 }
 
 function updateCharDiversificationReadout() {
@@ -278,6 +424,9 @@ function setCharCompanies(companies, buttonEl = null) {
     }
 
     updateCharDiversificationReadout();
+    riskState.lastRoll = null;
+    riskState.lastRollPercentile = null;
+    updateRiskControlsVisibility();
     updateCharacterChart();
 }
 
@@ -291,6 +440,9 @@ function setCharOutcome(outcomePct, buttonEl = null) {
     }
 
     updateCharDiversificationReadout();
+    riskState.lastRoll = null;
+    riskState.lastRollPercentile = null;
+    updateRiskControlsVisibility();
     updateCharacterChart();
 }
 
@@ -334,7 +486,7 @@ function startFlow(flowType) {
         setupIntersectionObserver('flow-character');
         initChart();
         updateCharacterChart(); // Initial render
-        updateJourneyLedger();
+        refreshCharacterUI();
     } else if(flowType === 'concept') {
         document.getElementById('flow-title').innerText = "The Concept Sandbox";
         const avatar = document.getElementById('flow-avatar');
@@ -346,7 +498,7 @@ function startFlow(flowType) {
         setupIntersectionObserver('flow-concept');
         initChart(); // Start with timeseries
         updateConceptChart(); // Initial render
-        updateJourneyLedger();
+        refreshCharacterUI();
     } else if(flowType === 'handout') {
         document.getElementById('flow-title').innerText = "Printable Study Guide";
         const avatar = document.getElementById('flow-avatar');
@@ -355,7 +507,7 @@ function startFlow(flowType) {
             avatar.classList.remove('flex');
         }
         if (handout) handout.style.display = 'block';
-        updateJourneyLedger();
+        refreshCharacterUI();
     }
     
     window.scrollTo(0,0);
@@ -460,7 +612,7 @@ function setCharInput(key, value, buttonEl = null, groupClass = null) {
     }
     
     updateCharacterChart();
-    updateJourneyLedger();
+    refreshCharacterUI();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -473,7 +625,7 @@ document.addEventListener('DOMContentLoaded', () => {
             charState.pmt = parseInt(e.target.value);
             document.getElementById('c1-savings-val').innerText = usd.format(charState.pmt);
             updateCharacterChart();
-            updateJourneyLedger();
+            refreshCharacterUI();
         });
     }
 
@@ -521,7 +673,7 @@ function setupIntersectionObserver(containerId) {
                     currentStep = stepId;
                     if(currentFlow === 'character') updateCharacterChart();
                     if(currentFlow === 'concept') updateConceptChart();
-                    updateJourneyLedger();
+                    refreshCharacterUI();
                 }
             }
         });
@@ -719,40 +871,101 @@ function updateCharacterChart() {
     }
     else if (currentStep === 'c4' || currentStep === 'c5' || currentStep === 'c6') {
         updateCharDiversificationReadout();
+        updateRiskControlsVisibility();
 
         const charShockPct = getCharShockPct();
+        const riskCurves = getRiskCurves(startAge, rate, fee, pmt);
 
         let dataChosen = calcCompoundPath(0, pmt, rate, fee, startAge, FINAL_AGE, crashAge, -charShockPct);
         let dataDiversified = calcCompoundPath(0, pmt, rate, fee, startAge, FINAL_AGE);
+        let dataMedian = riskCurves.medianPath;
+        let dataP10 = riskCurves.p10Path;
+        let dataP90 = riskCurves.p90Path;
+        let dataRoll = riskState.lastRoll !== null ? buildPathFromImpactPct(startAge, rate, fee, pmt, riskState.lastRoll) : null;
 
         if (currentStep === 'c4') {
             dataChosen = dataChosen.map((v, i) => i <= crashIndex ? v : null);
             dataDiversified = dataDiversified.map((v, i) => i <= crashIndex ? v : null);
+            dataMedian = dataMedian.map((v, i) => i <= crashIndex ? v : null);
+            dataP10 = dataP10.map((v, i) => i <= crashIndex ? v : null);
+            dataP90 = dataP90.map((v, i) => i <= crashIndex ? v : null);
+            if (dataRoll) dataRoll = dataRoll.map((v, i) => i <= crashIndex ? v : null);
         } else if (currentStep === 'c5') {
             dataChosen = dataChosen.map((v, i) => i <= (crashIndex + 1) ? v : null);
             dataDiversified = dataDiversified.map((v, i) => i <= (crashIndex + 1) ? v : null);
+            dataMedian = dataMedian.map((v, i) => i <= (crashIndex + 1) ? v : null);
+            dataP10 = dataP10.map((v, i) => i <= (crashIndex + 1) ? v : null);
+            dataP90 = dataP90.map((v, i) => i <= (crashIndex + 1) ? v : null);
+            if (dataRoll) dataRoll = dataRoll.map((v, i) => i <= (crashIndex + 1) ? v : null);
         }
 
         const chosenColor = charState.companies === 1 ? '#ef4444' : (charState.companies <= 10 ? '#f97316' : (charState.companies < 500 ? '#0ea5e9' : '#22c55e'));
 
-        chartInstance.data.datasets = [
-            {
-                label: 'Diversified Baseline (smooth market path)',
-                data: dataDiversified,
-                borderColor: '#9ca3af',
-                borderDash: [5, 5],
-                fill: false,
-                tension: 0.4
-            },
-            {
-                label: `${selectedKid.name}'s Portfolio (${charState.companies} companies)`,
-                data: dataChosen,
-                borderColor: chosenColor,
-                backgroundColor: charState.companies === 1 ? 'rgba(239, 68, 68, 0.12)' : 'rgba(14, 165, 233, 0.12)',
-                fill: true,
-                tension: 0.4
+        if (riskState.mode === 'typical') {
+            chartInstance.data.datasets = [
+                {
+                    label: 'Bad Luck (10th)',
+                    data: dataP10,
+                    borderColor: '#ef4444',
+                    borderDash: [4, 4],
+                    fill: false,
+                    tension: 0.4
+                },
+                {
+                    label: 'Good Luck (90th)',
+                    data: dataP90,
+                    borderColor: '#22c55e',
+                    borderDash: [4, 4],
+                    fill: false,
+                    tension: 0.4
+                },
+                {
+                    label: 'Typical (Median)',
+                    data: dataMedian,
+                    borderColor: '#0ea5e9',
+                    backgroundColor: 'rgba(14, 165, 233, 0.08)',
+                    fill: true,
+                    tension: 0.4
+                },
+                {
+                    label: 'Diversified Baseline (smooth)',
+                    data: dataDiversified,
+                    borderColor: '#9ca3af',
+                    borderDash: [5, 5],
+                    fill: false,
+                    tension: 0.4
+                }
+            ];
+            if (dataRoll) {
+                chartInstance.data.datasets.push({
+                    label: 'This Roll',
+                    data: dataRoll,
+                    borderColor: '#111827',
+                    borderWidth: 3,
+                    fill: false,
+                    tension: 0.4
+                });
             }
-        ];
+        } else {
+            chartInstance.data.datasets = [
+                {
+                    label: 'Diversified Baseline (smooth market path)',
+                    data: dataDiversified,
+                    borderColor: '#9ca3af',
+                    borderDash: [5, 5],
+                    fill: false,
+                    tension: 0.4
+                },
+                {
+                    label: `${selectedKid.name}'s Portfolio (${charState.companies} companies)`,
+                    data: dataChosen,
+                    borderColor: chosenColor,
+                    backgroundColor: charState.companies === 1 ? 'rgba(239, 68, 68, 0.12)' : 'rgba(14, 165, 233, 0.12)',
+                    fill: true,
+                    tension: 0.4
+                }
+            ];
+        }
 
         chartInstance.options.plugins.annotation.annotations = {
             eventLine: {
@@ -772,7 +985,10 @@ function updateCharacterChart() {
 
         const noShockPath = calcCompoundPath(0, pmt, rate, fee, startAge, FINAL_AGE);
         const preShock = noShockPath[crashIndex];
-        const postChosen = preShock * (1 + charShockPct);
+        const activeImpact = (riskState.mode === 'typical')
+            ? (riskState.lastRoll !== null ? riskState.lastRoll / 100 : riskCurves.medianImpact / 100)
+            : charShockPct;
+        const postChosen = preShock * (1 + activeImpact);
         const eventDelta = postChosen - preShock;
 
         if (currentStep === 'c4') {
@@ -800,26 +1016,49 @@ function updateCharacterChart() {
         } else {
             const fullChosen = calcCompoundPath(0, pmt, rate, fee, startAge, FINAL_AGE, crashAge, -charShockPct);
             const fullDiversified = calcCompoundPath(0, pmt, rate, fee, startAge, FINAL_AGE);
-            const difference = fullChosen[years] - fullDiversified[years];
+            let activeFinal = fullChosen[years];
+            if (riskState.mode === 'typical') {
+                if (riskState.lastRoll !== null) {
+                    const fullRoll = buildPathFromImpactPct(startAge, rate, fee, pmt, riskState.lastRoll);
+                    activeFinal = fullRoll[years];
+                } else {
+                    activeFinal = riskCurves.medianPath[years];
+                }
+            }
+            const difference = activeFinal - fullDiversified[years];
 
             updateScoreboard(
                 true,
                 `Final Wealth at Age ${FINAL_AGE}`,
-                fullChosen[years],
+                activeFinal,
                 '',
                 true,
-                difference >= 0 ? 'Gain from Concentration' : 'Cost of Concentration',
-                difference,
+                riskState.mode === 'typical'
+                    ? (riskState.lastRoll !== null ? 'Vs Typical Median' : 'Vs Diversified Baseline')
+                    : (difference >= 0 ? 'Gain from Concentration' : 'Cost of Concentration'),
+                riskState.mode === 'typical' && riskState.lastRoll !== null
+                    ? activeFinal - getRollMedianFinal(startAge, rate, fee, pmt)
+                    : difference,
                 ''
             );
 
-            chartInstance.data.datasets[0].data = fullDiversified;
-            chartInstance.data.datasets[1].data = fullChosen;
+            if (riskState.mode === 'story') {
+                chartInstance.data.datasets[0].data = fullDiversified;
+                chartInstance.data.datasets[1].data = fullChosen;
+            } else {
+                chartInstance.data.datasets.forEach(ds => {
+                    if (ds.label === 'Bad Luck (10th)') ds.data = riskCurves.p10Path;
+                    if (ds.label === 'Good Luck (90th)') ds.data = riskCurves.p90Path;
+                    if (ds.label === 'Typical (Median)') ds.data = riskCurves.medianPath;
+                    if (ds.label === 'Diversified Baseline (smooth)') ds.data = fullDiversified;
+                    if (ds.label === 'This Roll' && riskState.lastRoll !== null) ds.data = buildPathFromImpactPct(startAge, rate, fee, pmt, riskState.lastRoll);
+                });
+            }
         }
     }
 
     chartInstance.update();
-    updateJourneyLedger();
+    refreshCharacterUI();
 }
 
 // --- Flow 2: Concept Logic ---
