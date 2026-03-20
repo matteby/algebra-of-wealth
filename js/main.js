@@ -434,8 +434,16 @@ function updateCharacterChart() {
         const isActiveSelected = charState.fee === 1.5;
         const wealthLost = dataPassive[years] - dataActive[years];
 
-        updateScoreboard(true, 'Final Wealth', isActiveSelected ? dataActive[years] : dataPassive[years], isActiveSelected ? 'text-red-400' : 'text-green-400', 
-            true, 'Lost To Wall Street', -wealthLost, 'text-red-500');
+        updateScoreboard(
+            true,
+            'Final Wealth',
+            isActiveSelected ? dataActive[years] : dataPassive[years],
+            isActiveSelected ? 'text-red-400' : 'text-green-400',
+            isActiveSelected,
+            'Lost To Wall Street',
+            -wealthLost,
+            'text-red-500'
+        );
 
         chartInstance.data.datasets = [
             { 
@@ -462,44 +470,46 @@ function updateCharacterChart() {
         
         // Cleaner fee annotation: arrow at final year with compact label
         const endLabel = `Age ${FINAL_AGE}`;
-        chartInstance.options.plugins.annotation.annotations = {
-            feeArrow: {
-                type: 'line',
-                xMin: endLabel,
-                xMax: endLabel,
-                yMin: dataActive[years],
-                yMax: dataPassive[years],
-                borderColor: 'rgba(239, 68, 68, 0.75)',
-                borderWidth: 3,
-                borderDash: [3, 3],
-                label: {
-                    display: true,
-                    content: isActiveSelected ? `Lost to fees: ${usd.format(wealthLost)}` : `Fee gap: ${usd.format(wealthLost)}`,
-                    position: 'start',
-                    yAdjust: -8,
-                    backgroundColor: 'rgba(255,255,255,0.95)',
-                    color: '#b91c1c',
-                    borderColor: '#fecaca',
-                    borderWidth: 1,
-                    padding: 6,
-                    font: { weight: 'bold', size: 12 }
+        chartInstance.options.plugins.annotation.annotations = isActiveSelected
+            ? {
+                feeArrow: {
+                    type: 'line',
+                    xMin: endLabel,
+                    xMax: endLabel,
+                    yMin: dataActive[years],
+                    yMax: dataPassive[years],
+                    borderColor: 'rgba(239, 68, 68, 0.75)',
+                    borderWidth: 3,
+                    borderDash: [3, 3],
+                    label: {
+                        display: true,
+                        content: `Lost to fees: ${usd.format(wealthLost)}`,
+                        position: 'start',
+                        yAdjust: -8,
+                        backgroundColor: 'rgba(255,255,255,0.95)',
+                        color: '#b91c1c',
+                        borderColor: '#fecaca',
+                        borderWidth: 1,
+                        padding: 6,
+                        font: { weight: 'bold', size: 12 }
+                    }
+                },
+                feePointTop: {
+                    type: 'point',
+                    xValue: endLabel,
+                    yValue: dataPassive[years],
+                    backgroundColor: '#22c55e',
+                    radius: 4
+                },
+                feePointBottom: {
+                    type: 'point',
+                    xValue: endLabel,
+                    yValue: dataActive[years],
+                    backgroundColor: '#ef4444',
+                    radius: 4
                 }
-            },
-            feePointTop: {
-                type: 'point',
-                xValue: endLabel,
-                yValue: dataPassive[years],
-                backgroundColor: '#22c55e',
-                radius: 4
-            },
-            feePointBottom: {
-                type: 'point',
-                xValue: endLabel,
-                yValue: dataActive[years],
-                backgroundColor: '#ef4444',
-                radius: 4
             }
-        };
+            : {};
     }
     else if (currentStep === 'c4' || currentStep === 'c5' || currentStep === 'c6') {
         // Diversification and Crash
