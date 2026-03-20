@@ -173,11 +173,9 @@ function updateJourneyLedger() {
     setText('jl-companies', `${charState.companies} companies`);
     setText('jl-event', getEventLabel());
 
-    setClassName('jl-row-savings', stepIdx >= 1 ? 'flex justify-between' : 'hidden justify-between');
-    setClassName('jl-row-asset', stepIdx >= 2 ? 'flex justify-between' : 'hidden justify-between');
-    setClassName('jl-row-fee', stepIdx >= 3 ? 'flex justify-between' : 'hidden justify-between');
-    setClassName('jl-row-companies', stepIdx >= 4 ? 'flex justify-between' : 'hidden justify-between');
-    setClassName('jl-row-event', stepIdx >= 4 ? 'flex justify-between' : 'hidden justify-between');
+    setClassName('jl-row-savings', stepIdx >= 1 ? 'inline-flex items-center gap-1' : 'hidden');
+    setClassName('jl-row-asset', stepIdx >= 2 ? 'inline-flex items-center gap-1' : 'hidden');
+    setClassName('jl-row-fee', stepIdx >= 3 ? 'inline-flex items-center gap-1' : 'hidden');
 }
 
 function refreshCharacterUI() {
@@ -331,7 +329,13 @@ function updateRiskControlsVisibility() {
     const rollBtn = document.getElementById('risk-roll-btn');
     const status = document.getElementById('risk-roll-status');
     const finalPreview = document.getElementById('risk-final-preview');
+    const storyOutcomes = document.getElementById('risk-story-outcomes');
     const disabled = riskState.mode !== 'typical';
+
+    if (storyOutcomes) {
+        if (riskState.mode === 'typical') storyOutcomes.classList.add('hidden');
+        else storyOutcomes.classList.remove('hidden');
+    }
 
     [rollBtn].forEach(btn => {
         if (!btn) return;
@@ -342,7 +346,7 @@ function updateRiskControlsVisibility() {
 
     if (status) {
         if (disabled) {
-            status.innerText = 'Switch to Typical Outcomes to roll random draws.';
+            status.innerText = 'Story mode: use event chips.';
         } else if (riskState.lastRoll !== null && riskState.lastRollPercentile !== null) {
             status.innerText = `Last roll impact: ${(riskState.lastRoll > 0 ? '+' : '') + riskState.lastRoll.toFixed(1)}% | Percentile: ${Math.round(riskState.lastRollPercentile)}th`;
         } else {
@@ -918,11 +922,11 @@ function updateCharacterChart() {
             if (riskState.mode === 'story') {
                 dataChosen = dataChosen.map((v, i) => i <= crashIndex ? v : null);
                 dataDiversified = dataDiversified.map((v, i) => i <= crashIndex ? v : null);
+                dataMedian = dataMedian.map((v, i) => i <= crashIndex ? v : null);
+                dataP10 = dataP10.map((v, i) => i <= crashIndex ? v : null);
+                dataP90 = dataP90.map((v, i) => i <= crashIndex ? v : null);
+                if (dataRoll) dataRoll = dataRoll.map((v, i) => i <= crashIndex ? v : null);
             }
-            dataMedian = dataMedian.map((v, i) => i <= crashIndex ? v : null);
-            dataP10 = dataP10.map((v, i) => i <= crashIndex ? v : null);
-            dataP90 = dataP90.map((v, i) => i <= crashIndex ? v : null);
-            if (dataRoll) dataRoll = dataRoll.map((v, i) => i <= crashIndex ? v : null);
         } else if (currentStep === 'c5') {
             dataChosen = dataChosen.map((v, i) => i <= (crashIndex + 1) ? v : null);
             dataDiversified = dataDiversified.map((v, i) => i <= (crashIndex + 1) ? v : null);

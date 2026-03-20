@@ -436,63 +436,54 @@
 
                 <div id="sticky-viz-container" class="hidden lg:block lg:w-7/12">
                     <div class="sticky-viz flex-col gap-4">
-                        <div id="viz-scoreboard" class="w-full bg-brand-900 text-white p-6 rounded-2xl shadow-xl flex justify-between items-center transition-all duration-300 transform hidden">
+                        <div id="viz-scoreboard" class="w-full bg-brand-900 text-white p-4 rounded-2xl shadow-xl flex justify-between items-center transition-all duration-300 transform hidden">
                             <div>
                                 <p id="sb-title" class="text-brand-200 text-xs md:text-sm uppercase tracking-wider font-bold mb-1">Final Wealth</p>
-                                <h3 id="sb-value" class="text-4xl md:text-5xl font-extrabold font-mono text-green-400 transition-colors duration-500">$0</h3>
+                                <h3 id="sb-value" class="text-3xl md:text-4xl font-extrabold font-mono text-green-400 transition-colors duration-500">$0</h3>
                             </div>
                             <div id="sb-compare" class="text-right hidden opacity-0 transition-opacity duration-500">
                                 <p id="sb-compare-title" class="text-brand-200 text-xs md:text-sm uppercase tracking-wider font-bold mb-1">Difference</p>
-                                <h3 id="sb-compare-value" class="text-2xl md:text-3xl font-bold font-mono text-red-400 transition-colors duration-500">-$0</h3>
+                                <h3 id="sb-compare-value" class="text-xl md:text-2xl font-bold font-mono text-red-400 transition-colors duration-500">-$0</h3>
                             </div>
                         </div>
 
-                        <div id="journey-ledger" class="hidden w-full bg-white p-4 rounded-2xl shadow-xl border border-gray-100">
-                            <p class="text-xs uppercase tracking-wide font-bold text-gray-500 mb-3">Journey Ledger</p>
-                            <div class="space-y-2 text-sm">
-                                <div id="jl-row-savings" class="hidden justify-between"><span class="text-gray-600">Savings (Ch 1)</span><span id="jl-savings" class="font-semibold text-gray-900">--</span></div>
-                                <div id="jl-row-asset" class="hidden justify-between"><span class="text-gray-600">Return Path (Ch 2)</span><span id="jl-asset" class="font-semibold text-gray-900">--</span></div>
-                                <div id="jl-row-fee" class="hidden justify-between"><span class="text-gray-600">Fees (Ch 3)</span><span id="jl-fee" class="font-semibold text-gray-900">--</span></div>
-                                <div id="jl-row-companies" class="hidden justify-between"><span class="text-gray-600">Diversification (Ch 4)</span><span id="jl-companies" class="font-semibold text-gray-900">--</span></div>
-                                <div id="jl-row-event" class="hidden justify-between"><span class="text-gray-600">One-Company Event (Ch 4)</span><span id="jl-event" class="font-semibold text-gray-900">--</span></div>
+                        <div id="journey-ledger" class="hidden w-full bg-white p-2 rounded-2xl shadow-xl border border-gray-100">
+                            <div class="flex flex-wrap gap-x-3 gap-y-1 text-xs">
+                                <div id="jl-row-savings" class="hidden"><span class="text-gray-500">Save:</span> <span id="jl-savings" class="font-semibold text-gray-900">--</span></div>
+                                <div id="jl-row-asset" class="hidden"><span class="text-gray-500">Path:</span> <span id="jl-asset" class="font-semibold text-gray-900">--</span></div>
+                                <div id="jl-row-fee" class="hidden"><span class="text-gray-500">Fees:</span> <span id="jl-fee" class="font-semibold text-gray-900">--</span></div>
                             </div>
                         </div>
 
-                        <div id="risk-controls" class="hidden w-full bg-white p-4 rounded-2xl shadow-xl border border-gray-100">
-                            <div class="flex items-center justify-between gap-3 mb-3">
-                                <p class="text-xs uppercase tracking-wide font-bold text-gray-500">Risk View</p>
-                                <div class="flex gap-2">
-                                    <button id="risk-mode-story" class="choice-card selected text-xs px-3 py-2" onclick="setRiskMode('story', this)">One Story</button>
-                                    <button id="risk-mode-typical" class="choice-card text-xs px-3 py-2" onclick="setRiskMode('typical', this)">Typical Outcomes</button>
-                                </div>
+                        <div id="risk-controls" class="hidden w-full bg-white p-3 rounded-2xl shadow-xl border border-gray-100">
+                            <div class="flex flex-wrap items-center gap-2 mb-2">
+                                <span class="text-[11px] uppercase tracking-wide font-bold text-gray-500">View</span>
+                                <button id="risk-mode-story" class="risk-chip selected" onclick="setRiskMode('story', this)">One Story</button>
+                                <button id="risk-mode-typical" class="risk-chip" onclick="setRiskMode('typical', this)">Typical</button>
+                                <span class="text-[11px] uppercase tracking-wide font-bold text-gray-500 ml-2">Companies</span>
+                                <button class="risk-chip btn-char-companies" onclick="setCharCompanies(1, this)">1</button>
+                                <button class="risk-chip btn-char-companies" onclick="setCharCompanies(10, this)">10</button>
+                                <button class="risk-chip btn-char-companies" onclick="setCharCompanies(50, this)">50</button>
+                                <button class="risk-chip btn-char-companies selected-green" onclick="setCharCompanies(500, this)">500</button>
                             </div>
-                            <div class="flex gap-2 mb-2">
-                                <button id="risk-roll-btn" class="choice-card text-xs px-3 py-2" onclick="rollRiskDraw()">Roll the Dice</button>
+
+                            <div id="risk-story-outcomes" class="flex flex-wrap items-center gap-2 mb-2">
+                                <span class="text-[11px] uppercase tracking-wide font-bold text-gray-500">Event</span>
+                                <button class="risk-chip btn-char-outcome selected-red" onclick="setCharOutcome(-100, this)">Bust</button>
+                                <button class="risk-chip btn-char-outcome" onclick="setCharOutcome(8, this)">Avg</button>
+                                <button class="risk-chip btn-char-outcome" onclick="setCharOutcome(100, this)">Good</button>
+                                <button class="risk-chip btn-char-outcome" onclick="setCharOutcome(300, this)">Great</button>
+                                <button class="risk-chip btn-char-outcome" onclick="setCharOutcome(800, this)">Outlier</button>
                             </div>
-                            <div class="mb-3">
-                                <p class="text-xs uppercase tracking-wide font-bold text-gray-500 mb-2">Diversification</p>
-                                <div class="grid grid-cols-2 gap-2">
-                                    <button class="choice-card btn-char-companies" onclick="setCharCompanies(1, this)"><span class="text-xs font-semibold text-red-700">1 Company</span></button>
-                                    <button class="choice-card btn-char-companies" onclick="setCharCompanies(10, this)"><span class="text-xs font-semibold text-gray-900">10 Companies</span></button>
-                                    <button class="choice-card btn-char-companies" onclick="setCharCompanies(50, this)"><span class="text-xs font-semibold text-gray-900">50 Companies</span></button>
-                                    <button class="choice-card btn-char-companies selected-green" onclick="setCharCompanies(500, this)"><span class="text-xs font-semibold text-green-700">500 Companies</span></button>
-                                </div>
+
+                            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+                                <button id="risk-roll-btn" class="risk-chip" onclick="rollRiskDraw()">Roll the Dice</button>
+                                <span id="risk-roll-status" class="text-gray-600">Story mode: use event chips.</span>
+                                <span id="risk-final-preview" class="font-semibold text-gray-800">Final at age 65: --</span>
                             </div>
-                            <div class="mb-2">
-                                <p class="text-xs uppercase tracking-wide font-bold text-gray-500 mb-2">One-Company Event (One Story mode)</p>
-                                <div class="grid grid-cols-2 gap-2">
-                                    <button class="choice-card btn-char-outcome selected-red" onclick="setCharOutcome(-100, this)"><span class="text-xs font-semibold text-red-700">Bust (-100%)</span></button>
-                                    <button class="choice-card btn-char-outcome" onclick="setCharOutcome(8, this)"><span class="text-xs font-semibold text-gray-900">Average (+8%)</span></button>
-                                    <button class="choice-card btn-char-outcome" onclick="setCharOutcome(100, this)"><span class="text-xs font-semibold text-green-700">Good (+100%)</span></button>
-                                    <button class="choice-card btn-char-outcome" onclick="setCharOutcome(300, this)"><span class="text-xs font-semibold text-green-700">Great (+300%)</span></button>
-                                    <button class="choice-card btn-char-outcome" onclick="setCharOutcome(800, this)"><span class="text-xs font-semibold text-green-700">Outlier (+800%)</span></button>
-                                </div>
-                            </div>
-                            <p id="risk-final-preview" class="text-xs text-gray-700 mt-2">Final at age 65: --</p>
-                            <p id="risk-roll-status" class="text-xs text-gray-600">Switch to Typical Outcomes to roll random draws.</p>
                         </div>
 
-                        <div class="w-full bg-white p-6 rounded-2xl shadow-xl border border-gray-100 h-[50vh] flex items-center justify-center">
+                        <div class="w-full bg-white p-4 rounded-2xl shadow-xl border border-gray-100 flex-1 min-h-[42vh] flex items-center justify-center">
                             <canvas id="mainChart"></canvas>
                         </div>
                     </div>
