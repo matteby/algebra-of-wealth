@@ -6,8 +6,8 @@
     <title>The Algebra of Wealth: Interactive Experience</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Add annotation plugin for historical callouts -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.0"></script>
+    <link rel="stylesheet" href="css/style.css">
     <script>
         tailwind.config = {
             theme: {
@@ -25,518 +25,225 @@
             }
         }
     </script>
-    <style>
-        /* Scrollytelling Styles */
-        .step {
-            opacity: 0.3;
-            transition: opacity 0.5s ease;
-            min-height: 80vh; /* Ensure plenty of scroll space between steps */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        .step.is-active {
-            opacity: 1;
-        }
-        
-        /* Sticky Chart Container */
-        .sticky-viz {
-            position: sticky;
-            top: 2rem;
-            height: calc(100vh - 4rem);
-            display: flex;
-            align-items: center;
-        }
-
-        /* Hide sections by default */
-        #flow-character, #flow-concept {
-            display: none;
-        }
-    </style>
 </head>
 <body class="bg-gray-50 text-gray-900 font-sans antialiased">
 
-    <!-- LANDING PAGE -->
     <div id="landing-page" class="min-h-screen flex flex-col items-center justify-center p-4 bg-brand-900 text-white">
-        <div class="max-w-3xl text-center space-y-8">
+        <div class="max-w-4xl text-center space-y-8">
             <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight">The Algebra of Wealth</h1>
             <p class="text-xl md:text-2xl text-brand-100 font-light">Choose your path to master the mathematics of financial security.</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12 w-full max-w-4xl mx-auto">
-                <!-- Option 1: Character Journey -->
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12 w-full mx-auto">
                 <button onclick="startFlow('character')" class="group relative bg-white bg-opacity-10 hover:bg-opacity-20 border border-brand-500 rounded-2xl p-8 text-left transition-all duration-300 transform hover:-translate-y-1">
-                    <div class="absolute inset-0 bg-gradient-to-br from-brand-500/20 to-transparent opacity-0 group-hover:opacity-100 rounded-2xl transition-opacity"></div>
                     <h3 class="text-2xl font-bold mb-2">The Journey of Alex</h3>
-                    <p class="text-brand-100 text-sm mb-4">Follow one person's life from age 15 to 65. Make financial decisions for them and watch the consequences compound over decades.</p>
-                    <span class="inline-flex items-center text-brand-400 font-semibold group-hover:text-white transition-colors">
-                        Start the Story <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                    </span>
+                    <p class="text-brand-100 text-sm mb-4">Follow one person's life from age 15 to 65. Make interactive financial choices and watch the consequences compound over decades.</p>
+                    <span class="inline-flex items-center text-brand-400 font-semibold group-hover:text-white transition-colors">Start the Story &rarr;</span>
                 </button>
 
-                <!-- Option 2: Concept Sandbox -->
                 <button onclick="startFlow('concept')" class="group relative bg-white bg-opacity-10 hover:bg-opacity-20 border border-brand-500 rounded-2xl p-8 text-left transition-all duration-300 transform hover:-translate-y-1">
-                    <div class="absolute inset-0 bg-gradient-to-br from-brand-500/20 to-transparent opacity-0 group-hover:opacity-100 rounded-2xl transition-opacity"></div>
                     <h3 class="text-2xl font-bold mb-2">The Concept Sandbox</h3>
-                    <p class="text-brand-100 text-sm mb-4">Skip the story. Dive straight into the raw mathematics of compounding, fees, and the asymmetry of loss.</p>
-                    <span class="inline-flex items-center text-brand-400 font-semibold group-hover:text-white transition-colors">
-                        Explore the Math <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                    </span>
+                    <p class="text-brand-100 text-sm mb-4">Skip the story. Dive into compounding, timing, fees, and diversification mechanics.</p>
+                    <span class="inline-flex items-center text-brand-400 font-semibold group-hover:text-white transition-colors">Explore the Math &rarr;</span>
                 </button>
             </div>
-            
+
+            <div class="mt-8">
+                <button onclick="startFlow('handout')" class="text-brand-300 hover:text-white underline decoration-brand-500 underline-offset-4 transition-colors">
+                    View the Printable Study Guide
+                </button>
+            </div>
+
             <p class="text-sm text-brand-100/50 mt-12">Based on the principles by Scott Galloway</p>
         </div>
     </div>
 
-    <!-- MAIN APP CONTAINER (Hidden initially) -->
     <div id="app-container" class="hidden">
-        
-        <!-- Navigation Bar -->
         <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md border-b border-gray-200 z-50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16 items-center">
-                    <div class="flex items-center cursor-pointer" onclick="location.reload()">
-                        <svg class="h-6 w-6 text-brand-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                        </svg>
-                        <span class="font-semibold text-gray-900 text-sm">Back to Menu</span>
-                    </div>
-                    <div id="flow-title" class="font-bold text-lg text-brand-900">Flow Title</div>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between h-16 items-center">
+                <div class="flex items-center cursor-pointer hover:text-brand-600 transition-colors" onclick="location.reload()">
+                    <span class="font-semibold text-gray-900 text-sm">&larr; Back to Menu</span>
                 </div>
+                <div id="flow-title" class="font-bold text-lg text-brand-900">Flow Title</div>
             </div>
         </nav>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
             <div class="flex flex-col lg:flex-row gap-12 relative">
-                
-                <!-- LEFT COLUMN: The Scrolling Narrative -->
                 <div class="w-full lg:w-5/12 pb-32">
-                    
-                    <!-- ========================================== -->
-                    <!-- FLOW 1: CHARACTER JOURNEY CONTENT          -->
-                    <!-- ========================================== -->
-                    <div id="flow-character">
-                        
+                    <div id="flow-character" class="hidden">
                         <div class="step" data-step="c1">
                             <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Chapter 1: The Engine Starts</h2>
-                            <p class="text-lg text-gray-700 mb-6">Meet Alex. He's 15, just got his first summer job, and wants to buy a car eventually. His parents tell him about "Capital vs. Labor"—that he shouldn't just trade his time for money, but make his money work for him.</p>
-                            <p class="text-gray-600 mb-6 border-l-4 border-brand-500 pl-4">They tell him about the S&P 500, a basket of America's 500 largest companies that has historically returned about 8-10% a year.</p>
-                            
+                            <p class="text-lg text-gray-700 mb-6">Meet Alex. He's 15 and starts saving from his first job.</p>
                             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                                <label class="block text-sm font-bold text-gray-900 mb-2">How much of his paycheck should Alex save every month?</label>
-                                <div class="flex items-center space-x-4">
-                                    <input type="range" id="c1-savings" min="0" max="500" step="50" value="100" class="w-full h-2 bg-brand-200 rounded-lg appearance-none cursor-pointer" oninput="updateCharacterChart()">
+                                <label class="block text-sm font-bold text-gray-900 mb-2">How much should Alex save per month?</label>
+                                <div class="flex items-center space-x-4 mb-2">
+                                    <input type="range" id="c1-savings" min="0" max="1000" step="50" value="100">
                                     <span id="c1-savings-val" class="font-mono font-bold text-brand-600 w-16 text-right">$100</span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="step" data-step="c2">
-                            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Chapter 2: The Silent Thief</h2>
-                            <p class="text-lg text-gray-700 mb-6">Alex is now 30. He has a great career and is saving aggressively. But he meets a financial advisor who says, "Investing is too hard. Let me manage your money. I only charge a small 1.5% fee every year."</p>
-                            <p class="text-gray-600 mb-6 border-l-4 border-red-500 pl-4">It sounds tiny. But fees are a percentage of your total wealth, and they destroy the compound interest that money <em>would have</em> earned.</p>
-                            
-                            <div class="bg-red-50 p-6 rounded-xl border border-red-200">
-                                <label class="block text-sm font-bold text-red-900 mb-2">Watch what Wall Street's "small fee" does over 30 years.</label>
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-xs text-red-700">Passive Index (0.05% fee)</span>
-                                    <span class="text-xs font-bold text-red-900" id="c2-passive-val">$0</span>
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Chapter 2: Where to park the cash?</h2>
+                            <p class="text-lg text-gray-700 mb-6">Alex now needs to choose where the money goes.</p>
+                            <div class="space-y-4">
+                                <div class="choice-card btn-asset selected-red" onclick="setCharInput('assetClass', 'none', this, 'btn-asset')">
+                                    <h4 class="font-bold text-gray-900">No Investment (0%)</h4>
+                                    <p class="text-sm text-gray-500">Default baseline: cash not invested.</p>
                                 </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-xs text-red-700">Active Manager (1.50% fee)</span>
-                                    <span class="text-xs font-bold text-red-900" id="c2-active-val">$0</span>
+                                <div class="choice-card btn-asset" onclick="setCharInput('assetClass', 'cash', this, 'btn-asset')">
+                                    <h4 class="font-bold text-gray-900">Bank Account (2%)</h4>
+                                    <p class="text-sm text-gray-500">Low growth, often close to inflation.</p>
+                                </div>
+                                <div class="choice-card btn-asset" onclick="setCharInput('assetClass', 'sp500', this, 'btn-asset')">
+                                    <h4 class="font-bold text-gray-900">S&P 500 Index (8%)</h4>
+                                    <p class="text-sm text-gray-500">Higher long-run return with volatility.</p>
                                 </div>
                             </div>
                         </div>
 
                         <div class="step" data-step="c3">
-                            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Chapter 3: The Danger of "Sure Things"</h2>
-                            <p class="text-lg text-gray-700 mb-6">Alex is 45. He's frustrated that his wealth isn't growing fast enough. His neighbor tells him about a revolutionary new company that "can't lose." Historically, maybe it was a company called <strong>Enron</strong>.</p>
-                            <p class="text-gray-600 mb-6 border-l-4 border-brand-500 pl-4">Alex breaks the cardinal rule of Diversification. He takes all his money out of his broad index funds and puts it into this one single stock.</p>
-                            
-                            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                                <label class="block text-sm font-bold text-gray-900 mb-4">Watch what happens when the stock crashes.</label>
-                                <button onclick="triggerCrash()" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-colors">
-                                    Simulate Enron Crash (2001)
-                                </button>
-                                <p id="c3-crash-msg" class="text-sm text-red-600 font-bold mt-4 hidden text-center">Alex loses 99% of his capital.</p>
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Chapter 3: The Fee Trap</h2>
+                            <p class="text-lg text-gray-700 mb-6">Alex chooses between active management fees and low-cost indexing.</p>
+                            <div class="space-y-4">
+                                <div class="choice-card btn-fee" onclick="setCharInput('fee', 1.5, this, 'btn-fee')">
+                                    <h4 class="font-bold text-red-700">Active Manager (1.5%)</h4>
+                                    <p class="text-sm text-gray-500">Expensive and drags returns.</p>
+                                </div>
+                                <div class="choice-card btn-fee selected-green" onclick="setCharInput('fee', 0.05, this, 'btn-fee')">
+                                    <h4 class="font-bold text-green-700">Passive Index (0.05%)</h4>
+                                    <p class="text-sm text-gray-500">Lower fees preserve compounding.</p>
+                                </div>
                             </div>
                         </div>
 
                         <div class="step" data-step="c4">
-                            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Chapter 4: The Math of Loss</h2>
-                            <p class="text-lg text-gray-700 mb-6">Alex is devastated. He asks, "How much do I need this stock to bounce back just so I can break even?"</p>
-                            <p class="text-gray-600 mb-6 border-l-4 border-brand-500 pl-4">The math of loss is brutal and asymmetrical. If you lose 50%, you don't need a 50% gain to recover. You need a 100% gain.</p>
-                            
-                            <div class="bg-gray-900 text-white p-6 rounded-xl shadow-sm">
-                                <p class="text-sm text-gray-400 mb-2">Because Alex lost 99%...</p>
-                                <p class="text-5xl font-extrabold text-red-500 mb-4">+9,900%</p>
-                                <p class="text-sm text-gray-400">...is the gain required just to get back to his age-45 starting point. It is mathematically impossible. This is why we diversify.</p>
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Chapter 4: Diversification Choice</h2>
+                            <p class="text-lg text-gray-700 mb-6">Alex decides how concentrated to be.</p>
+                            <div class="space-y-4">
+                                <div class="choice-card btn-port selected-green" onclick="setCharInput('portfolio', 'index', this, 'btn-port')">
+                                    <h4 class="font-bold text-gray-900">100% Diversified Index</h4>
+                                </div>
+                                <div class="choice-card btn-port" onclick="setCharInput('portfolio', 'mixed', this, 'btn-port')">
+                                    <h4 class="font-bold text-gray-900">50/50 Split</h4>
+                                </div>
+                                <div class="choice-card btn-port" onclick="setCharInput('portfolio', 'concentrated', this, 'btn-port')">
+                                    <h4 class="font-bold text-red-600">100% Concentrated Bet</h4>
+                                </div>
                             </div>
                         </div>
 
+                        <div class="step" data-step="c5">
+                            <h2 class="text-4xl font-extrabold text-red-600 mb-4">Chapter 5: Crash</h2>
+                            <p class="text-lg text-gray-700 mb-6">A major crash hits. Compare damage across diversification levels.</p>
+                        </div>
+
+                        <div class="step" data-step="c6">
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Chapter 6: Recovery</h2>
+                            <p class="text-lg text-gray-700 mb-6">At age 65, compare final outcomes and see why preserving capital matters.</p>
+                        </div>
                     </div>
 
-                    <!-- ========================================== -->
-                    <!-- FLOW 2: CONCEPT SANDBOX CONTENT            -->
-                    <!-- ========================================== -->
-                    <div id="flow-concept">
+                    <div id="flow-concept" class="hidden">
                         <div class="step" data-step="s1">
-                            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">1. The Engine: Compounding</h2>
-                            <p class="text-lg text-gray-700 mb-6">Capital grows exponentially, not linearly. Most of the wealth is generated in the final years.</p>
-                            
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">1. Linear vs Exponential</h2>
                             <div class="space-y-6 bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                                 <div>
                                     <label class="block text-sm font-bold text-gray-900 mb-2">Monthly Contribution ($)</label>
-                                    <input type="range" id="s1-pmt" min="100" max="2000" step="100" value="500" class="w-full h-2 bg-brand-200 rounded-lg appearance-none" oninput="updateConceptChart()">
+                                    <input type="range" id="s1-pmt" min="100" max="2000" step="100" value="500">
                                     <p class="text-right text-sm font-mono mt-1" id="s1-pmt-val">$500</p>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-bold text-gray-900 mb-2">Annual Return (%)</label>
-                                    <input type="range" id="s1-rate" min="2" max="15" step="1" value="8" class="w-full h-2 bg-brand-200 rounded-lg appearance-none" oninput="updateConceptChart()">
+                                    <input type="range" id="s1-rate" min="2" max="15" step="1" value="8">
                                     <p class="text-right text-sm font-mono mt-1" id="s1-rate-val">8%</p>
                                 </div>
                             </div>
                         </div>
 
                         <div class="step" data-step="s2">
-                            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">2. The Friction: Fees</h2>
-                            <p class="text-lg text-gray-700 mb-6">A 2% fee doesn't take 2% of your wealth. It takes 2% of your <em>total balance every year</em>, destroying the compounding effect.</p>
-                            
-                            <div class="bg-red-50 p-6 rounded-xl border border-red-200">
-                                <div>
-                                    <label class="block text-sm font-bold text-red-900 mb-2">Active Management Fee (%)</label>
-                                    <input type="range" id="s2-fee" min="0" max="3" step="0.25" value="1.5" class="w-full h-2 bg-red-200 rounded-lg appearance-none" oninput="updateConceptChart()">
-                                    <p class="text-right text-sm font-mono font-bold text-red-600 mt-1" id="s2-fee-val">1.50%</p>
-                                </div>
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">2. The Variable of Time</h2>
+                            <div class="bg-white p-6 rounded-xl border border-gray-200">
+                                <label class="block text-sm font-bold text-gray-900 mb-2">Age You Start Investing</label>
+                                <input type="range" id="s2-age" min="20" max="45" step="5" value="20">
+                                <p class="text-right text-sm font-mono mt-1 text-brand-600 font-bold" id="s2-age-val">Age 20</p>
                             </div>
                         </div>
 
                         <div class="step" data-step="s3">
-                            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">3. The Asymmetry of Loss</h2>
-                            <p class="text-lg text-gray-700 mb-6">Why is capital preservation paramount? Because losing destroys the engine. Drag the slider to see the exponential gain required to recover from a loss.</p>
-                            
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">3. The Friction of Fees</h2>
+                            <div class="bg-red-50 p-6 rounded-xl border border-red-200">
+                                <label class="block text-sm font-bold text-red-900 mb-2">Wall Street Management Fee (%)</label>
+                                <input type="range" id="s3-fee" min="0" max="3" step="0.25" value="1.5">
+                                <p class="text-right text-sm font-mono font-bold text-red-600 mt-1" id="s3-fee-val">1.50%</p>
+                            </div>
+                        </div>
+
+                        <div class="step" data-step="s4">
+                            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">4. The Shield of Diversification</h2>
                             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                                <label class="block text-sm font-bold text-gray-900 mb-4">Portfolio Loss (%)</label>
-                                <input type="range" id="s3-loss" min="5" max="95" step="5" value="50" class="w-full h-2 bg-red-200 rounded-lg appearance-none" oninput="updateConceptChart()">
+                                <label class="block text-sm font-bold text-gray-900 mb-4">How many companies do you own?</label>
+                                <input type="range" id="s4-companies" min="1" max="500" step="1" value="1">
                                 <div class="mt-4 flex justify-between items-end border-t border-gray-100 pt-4">
                                     <div>
-                                        <p class="text-xs text-gray-500 uppercase">Loss</p>
-                                        <p class="text-xl font-bold text-red-600" id="s3-loss-val">-50%</p>
+                                        <p class="text-xs text-gray-500 uppercase font-semibold">Portfolio Size</p>
+                                        <p class="text-xl font-bold text-brand-600" id="s4-companies-val">1 Company</p>
                                     </div>
                                     <div class="text-right">
-                                        <p class="text-xs text-gray-500 uppercase">Required Gain</p>
-                                        <p class="text-3xl font-extrabold text-brand-600" id="s3-req-val">+100%</p>
+                                        <p class="text-xs text-gray-500 uppercase font-semibold">Damage if 1 goes bankrupt</p>
+                                        <p class="text-3xl font-extrabold text-red-600" id="s4-damage-val">-100%</p>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="flow-handout" class="hidden w-full lg:w-[200%] pb-32">
+                        <div class="max-w-4xl bg-white p-8 md:p-12 shadow-sm border border-gray-200 rounded-xl">
+                            <div class="text-center mb-10 border-b-2 border-brand-900 pb-6">
+                                <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight mb-2">The Algebra of Wealth</h1>
+                                <h2 class="text-xl text-brand-600 font-medium">Core Mental Models & Formulas</h2>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                                <div class="space-y-8">
+                                    <section>
+                                        <h3 class="text-2xl font-bold text-gray-900 mb-4 border-l-4 border-brand-500 pl-3">The Wealth Equation</h3>
+                                        <div class="bg-brand-50 p-4 rounded-lg font-mono text-center text-lg shadow-inner mb-4">Wealth = Focus + (Stoicism × Time × Diversification)</div>
+                                    </section>
+                                </div>
+                                <div class="space-y-8">
+                                    <section>
+                                        <h3 class="text-2xl font-bold text-gray-900 mb-4 border-l-4 border-brand-500 pl-3">Asset Classes</h3>
+                                        <p class="text-sm text-gray-700">Stocks = ownership in corporations. Bonds = lending money for interest. Real Estate = physical property with leverage potential.</p>
+                                    </section>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- RIGHT COLUMN: Sticky Visualizer -->
-                <div class="hidden lg:block lg:w-7/12">
-                    <div class="sticky-viz">
-                        <div class="w-full bg-white p-6 rounded-2xl shadow-xl border border-gray-100 h-[60vh] flex items-center justify-center">
+                <div id="sticky-viz-container" class="hidden lg:block lg:w-7/12">
+                    <div class="sticky-viz flex-col gap-4">
+                        <div id="viz-scoreboard" class="w-full bg-brand-900 text-white p-6 rounded-2xl shadow-xl flex justify-between items-center transition-all duration-300 transform hidden">
+                            <div>
+                                <p id="sb-title" class="text-brand-200 text-xs md:text-sm uppercase tracking-wider font-bold mb-1">Final Wealth</p>
+                                <h3 id="sb-value" class="text-4xl md:text-5xl font-extrabold font-mono text-green-400 transition-colors duration-500">$0</h3>
+                            </div>
+                            <div id="sb-compare" class="text-right hidden opacity-0 transition-opacity duration-500">
+                                <p id="sb-compare-title" class="text-brand-200 text-xs md:text-sm uppercase tracking-wider font-bold mb-1">Difference</p>
+                                <h3 id="sb-compare-value" class="text-2xl md:text-3xl font-bold font-mono text-red-400 transition-colors duration-500">-$0</h3>
+                            </div>
+                        </div>
+
+                        <div class="w-full bg-white p-6 rounded-2xl shadow-xl border border-gray-100 h-[50vh] flex items-center justify-center">
                             <canvas id="mainChart"></canvas>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 
-    <script>
-        // --- State Management ---
-        let currentFlow = null;
-        let currentStep = null;
-        let chartInstance = null;
-        let crashTriggered = false;
-
-        // Formatter
-        const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
-
-        // --- Math Helpers ---
-        function calcCompound(p, pmt, rate, years) {
-            const data = [];
-            let current = p;
-            for(let i=0; i<=years; i++) {
-                if(i===0) data.push(current);
-                else {
-                    current = current * (1 + rate/100) + (pmt * 12);
-                    data.push(current);
-                }
-            }
-            return data;
-        }
-
-        function calcContributions(p, pmt, years) {
-            const data = [];
-            for(let i=0; i<=years; i++) data.push(p + (pmt * 12 * i));
-            return data;
-        }
-
-        // --- Initialization ---
-        function startFlow(flowType) {
-            document.getElementById('landing-page').style.display = 'none';
-            document.getElementById('app-container').classList.remove('hidden');
-            
-            currentFlow = flowType;
-            
-            if(flowType === 'character') {
-                document.getElementById('flow-title').innerText = "The Journey of Alex";
-                document.getElementById('flow-character').style.display = 'block';
-                setupIntersectionObserver('flow-character');
-                initChart();
-                updateCharacterChart(); // Initial render
-            } else {
-                document.getElementById('flow-title').innerText = "The Concept Sandbox";
-                document.getElementById('flow-concept').style.display = 'block';
-                setupIntersectionObserver('flow-concept');
-                initChart();
-                updateConceptChart(); // Initial render
-            }
-            
-            // Scroll to top
-            window.scrollTo(0,0);
-        }
-
-        // --- Scrollytelling Logic (Intersection Observer) ---
-        function setupIntersectionObserver(containerId) {
-            const steps = document.querySelectorAll(`#${containerId} .step`);
-            
-            const observerOptions = {
-                root: null,
-                rootMargin: '-40% 0px -40% 0px', // Trigger when element is in middle of screen
-                threshold: 0
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        // Remove active class from all
-                        steps.forEach(s => s.classList.remove('is-active'));
-                        // Add to current
-                        entry.target.classList.add('is-active');
-                        
-                        const stepId = entry.target.getAttribute('data-step');
-                        currentStep = stepId;
-                        
-                        // Update chart based on current step
-                        if(currentFlow === 'character') updateCharacterChart();
-                        if(currentFlow === 'concept') updateConceptChart();
-                    }
-                });
-            }, observerOptions);
-
-            steps.forEach(step => observer.observe(step));
-        }
-
-        // --- Chart Generation ---
-        function initChart() {
-            const ctx = document.getElementById('mainChart').getContext('2d');
-            
-            Chart.defaults.font.family = "'Inter', sans-serif";
-            
-            chartInstance = new Chart(ctx, {
-                type: 'line',
-                data: { labels: [], datasets: [] },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    animation: {
-                        duration: 750,
-                        easing: 'easeOutQuart'
-                    },
-                    interaction: {
-                        mode: 'index',
-                        intersect: false,
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(val) { return usd.format(val); }
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: { position: 'bottom' },
-                        annotation: { annotations: {} }
-                    }
-                }
-            });
-        }
-
-        // --- Flow 1: Character Logic ---
-        function updateCharacterChart() {
-            if(!chartInstance) return;
-
-            const pmt = parseInt(document.getElementById('c1-savings').value);
-            document.getElementById('c1-savings-val').innerText = usd.format(pmt);
-            
-            const years = 50; // Age 15 to 65
-            const labels = Array.from({length: years + 1}, (_, i) => `Age ${15 + i}`);
-            
-            // Base Data
-            const dataBase = calcCompound(0, pmt, 8, years);
-            const dataContrib = calcContributions(0, pmt, years);
-
-            if(currentStep === 'c1') {
-                // Just show simple compounding
-                chartInstance.data = {
-                    labels: labels,
-                    datasets: [
-                        { label: 'S&P 500 (8% Return)', data: dataBase, borderColor: '#0ea5e9', backgroundColor: 'rgba(14, 165, 233, 0.1)', fill: true, tension: 0.4 },
-                        { label: 'Cash Contributed', data: dataContrib, borderColor: '#9ca3af', borderDash: [5,5], fill: false, tension: 0 }
-                    ]
-                };
-                chartInstance.options.scales.y.type = 'linear';
-                chartInstance.options.plugins.annotation.annotations = {};
-            } 
-            else if (currentStep === 'c2') {
-                // Introduce Fees
-                const dataFee = calcCompound(0, pmt, 8 - 1.5, years);
-                
-                // Update UI text
-                document.getElementById('c2-passive-val').innerText = usd.format(dataBase[years]);
-                document.getElementById('c2-active-val').innerText = usd.format(dataFee[years]);
-
-                chartInstance.data = {
-                    labels: labels,
-                    datasets: [
-                        { label: 'Passive Index (0.05% fee)', data: dataBase, borderColor: '#16a34a', backgroundColor: 'rgba(22, 163, 74, 0.1)', fill: true, tension: 0.4 },
-                        { label: 'Active Manager (1.50% fee)', data: dataFee, borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', fill: true, tension: 0.4 }
-                    ]
-                };
-                chartInstance.options.plugins.annotation.annotations = {};
-            }
-            else if (currentStep === 'c3' || currentStep === 'c4') {
-                // The Crash (Enron)
-                const age45Index = 30; // Age 45 is index 30 (15 + 30 = 45)
-                const dataEnron = [...dataBase];
-                
-                if(crashTriggered) {
-                    // Wipe out at age 45, never recovers
-                    for(let i = age45Index; i <= years; i++) {
-                        dataEnron[i] = dataEnron[age45Index-1] * 0.01; // 99% loss
-                    }
-                }
-
-                chartInstance.data = {
-                    labels: labels,
-                    datasets: [
-                        { label: 'Diversified Index (S&P 500)', data: dataBase, borderColor: '#9ca3af', borderDash: [5,5], fill: false, tension: 0.4 },
-                        { label: 'Concentrated Risk (Enron)', data: dataEnron, borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.2)', fill: true, tension: 0.4 }
-                    ]
-                };
-
-                // Add annotation pointing to the crash
-                chartInstance.options.plugins.annotation.annotations = {
-                    line1: {
-                        type: 'line',
-                        xMin: 'Age 45',
-                        xMax: 'Age 45',
-                        borderColor: '#ef4444',
-                        borderWidth: 2,
-                        borderDash: [5,5],
-                        label: {
-                            display: true,
-                            content: 'Age 45: The Crash',
-                            position: 'start'
-                        }
-                    }
-                };
-            }
-
-            chartInstance.update();
-        }
-
-        function triggerCrash() {
-            crashTriggered = true;
-            document.getElementById('c3-crash-msg').classList.remove('hidden');
-            updateCharacterChart();
-        }
-
-        // --- Flow 2: Concept Logic ---
-        function updateConceptChart() {
-            if(!chartInstance) return;
-
-            if (currentStep === 's1' || currentStep === 's2') {
-                const pmt = parseInt(document.getElementById('s1-pmt').value);
-                const rate = parseInt(document.getElementById('s1-rate').value);
-                const fee = parseFloat(document.getElementById('s2-fee').value);
-                
-                document.getElementById('s1-pmt-val').innerText = usd.format(pmt);
-                document.getElementById('s1-rate-val').innerText = `${rate}%`;
-                document.getElementById('s2-fee-val').innerText = `${fee.toFixed(2)}%`;
-
-                const years = 40;
-                const labels = Array.from({length: years + 1}, (_, i) => `Year ${i}`);
-                const dataBase = calcCompound(0, pmt, rate, years);
-                
-                chartInstance.options.scales.x.title = {display: true, text: 'Timeline (Years)'};
-                chartInstance.options.scales.y.ticks.callback = function(val) { return usd.format(val); };
-
-                if(currentStep === 's1') {
-                    chartInstance.data = {
-                        labels: labels,
-                        datasets: [
-                            { label: `Gross Return (${rate}%)`, data: dataBase, borderColor: '#0ea5e9', backgroundColor: 'rgba(14, 165, 233, 0.1)', fill: true, tension: 0.4 }
-                        ]
-                    };
-                } else {
-                    const dataFee = calcCompound(0, pmt, rate - fee, years);
-                    chartInstance.data = {
-                        labels: labels,
-                        datasets: [
-                            { label: `Gross Return (${rate}%)`, data: dataBase, borderColor: '#16a34a', fill: false, borderDash: [5,5], tension: 0.4 },
-                            { label: `After ${fee}% Fee`, data: dataFee, borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', fill: true, tension: 0.4 }
-                        ]
-                    };
-                }
-            } 
-            else if (currentStep === 's3') {
-                // Math of Loss Curve
-                const lossPct = parseInt(document.getElementById('s3-loss').value);
-                document.getElementById('s3-loss-val').innerText = `-${lossPct}%`;
-                
-                const reqGain = ((1 / (1 - (lossPct/100))) - 1) * 100;
-                document.getElementById('s3-req-val').innerText = `+${Math.round(reqGain)}%`;
-
-                const labels = [];
-                const data = [];
-                for(let i=5; i<=90; i+=5) {
-                    labels.push(`-${i}%`);
-                    data.push(((1 / (1 - (i/100))) - 1) * 100);
-                }
-
-                chartInstance.options.scales.x.title = {display: true, text: 'Portfolio Loss (%)'};
-                chartInstance.options.scales.y.ticks.callback = function(val) { return val + '%'; };
-
-                // Highlight point logic
-                const pointColors = data.map((_, index) => (index * 5 + 5) === lossPct ? '#ef4444' : '#0ea5e9');
-                const pointRadii = data.map((_, index) => (index * 5 + 5) === lossPct ? 8 : 3);
-
-                chartInstance.data = {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Gain Required to Recover (%)',
-                        data: data,
-                        borderColor: '#0ea5e9',
-                        pointBackgroundColor: pointColors,
-                        pointBorderColor: pointColors,
-                        pointRadius: pointRadii,
-                        fill: false,
-                        tension: 0.4
-                    }]
-                };
-            }
-
-            chartInstance.update();
-        }
-
-    </script>
+    <script src="js/main.js"></script>
 </body>
 </html>
