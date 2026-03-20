@@ -8,12 +8,12 @@ let selectedKid = {
     avatar: '❓'
 };
 
-let selectedKidAge = null;
+let selectedKidAge = 13;
 const FINAL_AGE = 65;
 const setupState = {
     nameSet: false,
     avatarSet: false,
-    ageSet: false
+    ageSet: true
 };
 
 const defaultKidAvatar = {
@@ -421,7 +421,7 @@ function setKidAge(ageInput) {
         return;
     }
 
-    const age = Math.max(0, Math.min(18, parsed));
+    const age = Math.max(0, Math.min(60, parsed));
     selectedKidAge = age;
     setupState.ageSet = true;
 
