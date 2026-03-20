@@ -24,7 +24,8 @@ const charState = {
     pmt: 0,
     assetClass: 'none', // 'none' (0%), 'cash' (2%) vs 'sp500' (8%)
     fee: 0.05, // 0.05% vs 1.5%
-    portfolio: 'index', // 'index' (S&P), 'mixed' (50/50), 'concentrated' (Enron)
+    companies: 500,
+    companyOutcomePct: -100
 };
 
 // Concept Sandbox State
@@ -118,6 +119,70 @@ function setConceptOutcome(outcomePct, buttonEl = null) {
     }
 
     updateConceptChart();
+}
+
+function getCharBaseRate() {
+    if (charState.assetClass === 'sp500') return 8;
+    if (charState.assetClass === 'cash') return 2;
+    return 0;
+}
+
+function getCharShockPct() {
+    return (charState.companyOutcomePct / 100) * (1 / charState.companies);
+}
+
+function updateCharDiversificationReadout() {
+    const weightPct = (100 / charState.companies);
+    const impactPct = charState.companyOutcomePct / charState.companies;
+    const impactSign = impactPct > 0 ? '+' : '';
+
+    const weightEl = document.getElementById('c4-weight-val');
+    const impactEl = document.getElementById('c4-impact-val');
+    const c5ImpactEl = document.getElementById('c5-impact-val');
+    const c5Copy = document.getElementById('c5-impact-copy');
+
+    if (weightEl) weightEl.innerText = weightPct.toFixed(weightPct >= 1 ? 0 : 2).replace('.00', '') + '%';
+
+    if (impactEl) {
+        impactEl.innerText = impactSign + impactPct.toFixed(Math.abs(impactPct) >= 1 ? 1 : 2).replace('.00', '').replace('.0', '') + '%';
+        impactEl.className = `font-semibold ${impactPct > 0 ? 'text-green-600' : (impactPct < 0 ? 'text-red-600' : 'text-gray-600')}`;
+    }
+
+    if (c5ImpactEl) {
+        c5ImpactEl.innerText = impactSign + impactPct.toFixed(Math.abs(impactPct) >= 1 ? 1 : 2).replace('.00', '').replace('.0', '') + '%';
+        c5ImpactEl.className = `font-bold ${impactPct > 0 ? 'text-green-700' : (impactPct < 0 ? 'text-red-700' : 'text-gray-700')}`;
+    }
+
+    if (c5Copy) {
+        c5Copy.className = impactPct > 0 ? 'text-green-900' : (impactPct < 0 ? 'text-red-900' : 'text-gray-900');
+    }
+}
+
+function setCharCompanies(companies, buttonEl = null) {
+    charState.companies = companies;
+
+    if (buttonEl) {
+        document.querySelectorAll('.btn-char-companies').forEach(el => el.classList.remove('selected', 'selected-red', 'selected-green'));
+        if (companies === 1) buttonEl.classList.add('selected-red');
+        else if (companies === 500) buttonEl.classList.add('selected-green');
+        else buttonEl.classList.add('selected');
+    }
+
+    updateCharDiversificationReadout();
+    updateCharacterChart();
+}
+
+function setCharOutcome(outcomePct, buttonEl = null) {
+    charState.companyOutcomePct = outcomePct;
+
+    if (buttonEl) {
+        document.querySelectorAll('.btn-char-outcome').forEach(el => el.classList.remove('selected', 'selected-red', 'selected-green'));
+        if (outcomePct >= 0) buttonEl.classList.add('selected-green');
+        else buttonEl.classList.add('selected-red');
+    }
+
+    updateCharDiversificationReadout();
+    updateCharacterChart();
 }
 
 // --- Initialization ---
@@ -252,9 +317,9 @@ function setCharInput(key, value, buttonEl = null, groupClass = null) {
     
     if (buttonEl && groupClass) {
         document.querySelectorAll(`.${groupClass}`).forEach(el => el.classList.remove('selected', 'selected-red', 'selected-green'));
-        if(value === 'none' || value === 'cash' || value === 'active' || value === 'concentrated') {
+        if ((key === 'assetClass' && (value === 'none' || value === 'cash')) || (key === 'fee' && value === 1.5)) {
             buttonEl.classList.add('selected-red');
-        } else if(value === 'sp500' || value === 'passive' || value === 'index') {
+        } else if ((key === 'assetClass' && value === 'sp500') || (key === 'fee' && value === 0.05)) {
             buttonEl.classList.add('selected-green');
         } else {
             buttonEl.classList.add('selected');
@@ -389,9 +454,15 @@ function updateCharacterChart() {
     const years = FINAL_AGE - startAge;
     const labels = Array.from({length: years + 1}, (_, i) => `Age ${startAge + i}`);
     const crashAge = Math.max(startAge + 1, 45);
+    const crashIndex = crashAge - startAge;
+
+    const c5EventAgeEl = document.getElementById('c5-event-age');
+    const c6EventAgeEl = document.getElementById('c6-event-age');
+    if (c5EventAgeEl) c5EventAgeEl.innerText = String(crashAge);
+    if (c6EventAgeEl) c6EventAgeEl.innerText = String(crashAge);
 
     // Calculate different paths
-    const rate = charState.assetClass === 'sp500' ? 8 : (charState.assetClass === 'cash' ? 2 : 0);
+    const rate = getCharBaseRate();
     const fee = charState.fee;
     const pmt = charState.pmt;
     
@@ -425,11 +496,8 @@ function updateCharacterChart() {
         ];
     }
     else if (currentStep === 'c3') {
-        // Introduce Fees (Assuming S&P 500 at 8%)
-        // We ALWAYS show both the "Ideal" (0.05%) and the "Active" (1.5%) line so the gap is obvious.
-        // We highlight the one the user selected.
-        const dataActive = calcCompoundPath(0, pmt, 8, 1.5, startAge, FINAL_AGE);
-        const dataPassive = calcCompoundPath(0, pmt, 8, 0.05, startAge, FINAL_AGE);
+        const dataActive = calcCompoundPath(0, pmt, rate, 1.5, startAge, FINAL_AGE);
+        const dataPassive = calcCompoundPath(0, pmt, rate, 0.05, startAge, FINAL_AGE);
 
         const isActiveSelected = charState.fee === 1.5;
         const wealthLost = dataPassive[years] - dataActive[years];
@@ -446,8 +514,8 @@ function updateCharacterChart() {
         );
 
         chartInstance.data.datasets = [
-            { 
-                label: 'Passive Index (0.05% fee)', 
+            {
+                label: `Low Fee Path (0.05%) on ${rate}% base`,
                 data: dataPassive, 
                 borderColor: isActiveSelected ? '#86efac' : '#22c55e', // Dim if not selected
                 backgroundColor: isActiveSelected ? 'transparent' : 'rgba(34, 197, 94, 0.15)', 
@@ -456,8 +524,8 @@ function updateCharacterChart() {
                 fill: !isActiveSelected, 
                 tension: 0.4 
             },
-            { 
-                label: 'Active Manager (1.50% fee)', 
+            {
+                label: `High Fee Path (1.50%) on ${rate}% base`,
                 data: dataActive, 
                 borderColor: isActiveSelected ? '#ef4444' : '#fca5a5', // Bright red if selected
                 backgroundColor: isActiveSelected ? 'rgba(239, 68, 68, 0.15)' : 'transparent', 
@@ -512,61 +580,104 @@ function updateCharacterChart() {
             : {};
     }
     else if (currentStep === 'c4' || currentStep === 'c5' || currentStep === 'c6') {
-        // Diversification and Crash
-        let crashPct = 0;
-        if (charState.portfolio === 'index') crashPct = 0.40; // 2008 S&P drop
-        if (charState.portfolio === 'mixed') crashPct = 0.70; // 50/50 blend drop
-        if (charState.portfolio === 'concentrated') crashPct = 0.99; // Enron/Tech bubble wipeout
+        updateCharDiversificationReadout();
 
-        // If c4, we don't crash YET, we just show the line up to age 45.
-        // If c5, we crash at 45 and show the immediate drop.
-        // If c6, we show the recovery to 65.
-        
-        let crashData = calcCompoundPath(0, pmt, 8, charState.fee, startAge, FINAL_AGE, crashAge, crashPct);
-        
-        // Hide future data based on step
+        const charShockPct = getCharShockPct();
+        const baselineShockPct = (charState.companyOutcomePct / 100) * (1 / 500);
+
+        let dataChosen = calcCompoundPath(0, pmt, rate, fee, startAge, FINAL_AGE, crashAge, -charShockPct);
+        let dataDiversified = calcCompoundPath(0, pmt, rate, fee, startAge, FINAL_AGE, crashAge, -baselineShockPct);
+
         if (currentStep === 'c4') {
-            crashData = crashData.map((v, i) => i <= (crashAge - startAge) ? v : null); // Cut off before crash
+            dataChosen = dataChosen.map((v, i) => i <= crashIndex ? v : null);
+            dataDiversified = dataDiversified.map((v, i) => i <= crashIndex ? v : null);
         } else if (currentStep === 'c5') {
-            crashData = crashData.map((v, i) => i <= (crashAge - startAge + 1) ? v : null); // Cut off immediately after crash
+            dataChosen = dataChosen.map((v, i) => i <= (crashIndex + 1) ? v : null);
+            dataDiversified = dataDiversified.map((v, i) => i <= (crashIndex + 1) ? v : null);
         }
 
-        // Always show the ideal "No Crash / Diversified" path as a ghost line for comparison if c5/c6
-        const datasets = [];
-        let ghostData = calcCompoundPath(0, pmt, 8, charState.fee, startAge, FINAL_AGE, crashAge, 0.40); // Standard market drop
-        if (currentStep !== 'c4') {
-            if (currentStep === 'c5') ghostData = ghostData.map((v, i) => i <= (crashAge - startAge + 1) ? v : null);
-            
-            datasets.push({
-                label: 'Market Baseline (Diversified)', data: ghostData, borderColor: '#d1d5db', borderDash: [5,5], fill: false, tension: 0.4
-            });
-        }
+        const chosenColor = charState.companies === 1 ? '#ef4444' : (charState.companies <= 10 ? '#f97316' : (charState.companies < 500 ? '#0ea5e9' : '#22c55e'));
 
-        datasets.push({
-            label: `Alex's Portfolio (${charState.portfolio})`, 
-            data: crashData, 
-            borderColor: charState.portfolio === 'concentrated' ? '#ef4444' : (charState.portfolio === 'mixed' ? '#eab308' : '#22c55e'), 
-            backgroundColor: charState.portfolio === 'concentrated' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(34, 197, 94, 0.1)', 
-            fill: true, tension: 0.4
-        });
+        chartInstance.data.datasets = [
+            {
+                label: 'Diversified Baseline (500 companies)',
+                data: dataDiversified,
+                borderColor: '#9ca3af',
+                borderDash: [5, 5],
+                fill: false,
+                tension: 0.4
+            },
+            {
+                label: `${selectedKid.name}'s Portfolio (${charState.companies} companies)`,
+                data: dataChosen,
+                borderColor: chosenColor,
+                backgroundColor: charState.companies === 1 ? 'rgba(239, 68, 68, 0.12)' : 'rgba(14, 165, 233, 0.12)',
+                fill: true,
+                tension: 0.4
+            }
+        ];
 
-        chartInstance.data.datasets = datasets;
-
-        if (currentStep === 'c5' || currentStep === 'c6') {
-            chartInstance.options.plugins.annotation.annotations = {
-                line1: {
-                    type: 'line', xMin: `Age ${crashAge}`, xMax: `Age ${crashAge}`, borderColor: '#ef4444', borderWidth: 2, borderDash: [5,5],
-                    label: { display: true, content: `Age ${crashAge}: Market Crash`, position: 'start' }
+        chartInstance.options.plugins.annotation.annotations = {
+            eventLine: {
+                type: 'line',
+                xMin: `Age ${crashAge}`,
+                xMax: `Age ${crashAge}`,
+                borderColor: charShockPct >= 0 ? '#16a34a' : '#ef4444',
+                borderWidth: 2,
+                borderDash: [5, 5],
+                label: {
+                    display: true,
+                    content: charShockPct >= 0 ? `Age ${crashAge}: One-company upside event` : `Age ${crashAge}: One-company downside event`,
+                    position: 'start'
                 }
-            };
-        }
+            }
+        };
 
-        if (currentStep === 'c6') {
-            const difference = crashData[years] - ghostData[years];
-            updateScoreboard(true, "Final Wealth at Age 65", crashData[years], charState.portfolio === 'concentrated' ? 'text-red-500' : 'text-green-400',
-                true, "Vs Ideal Diversification", difference, difference < 0 ? 'text-red-500' : 'text-gray-400');
+        const noShockPath = calcCompoundPath(0, pmt, rate, fee, startAge, FINAL_AGE);
+        const preShock = noShockPath[crashIndex];
+        const postChosen = preShock * (1 + charShockPct);
+        const eventDelta = postChosen - preShock;
+
+        if (currentStep === 'c4') {
+            updateScoreboard(
+                true,
+                `Wealth Before Event (Age ${crashAge})`,
+                preShock,
+                '',
+                true,
+                'Event Impact (Dollar)',
+                eventDelta,
+                ''
+            );
+        } else if (currentStep === 'c5') {
+            updateScoreboard(
+                true,
+                `After Shock (Age ${crashAge})`,
+                postChosen,
+                '',
+                true,
+                'One-Year Shock',
+                eventDelta,
+                ''
+            );
         } else {
-            updateScoreboard(false);
+            const fullChosen = calcCompoundPath(0, pmt, rate, fee, startAge, FINAL_AGE, crashAge, -charShockPct);
+            const fullDiversified = calcCompoundPath(0, pmt, rate, fee, startAge, FINAL_AGE, crashAge, -baselineShockPct);
+            const difference = fullChosen[years] - fullDiversified[years];
+
+            updateScoreboard(
+                true,
+                `Final Wealth at Age ${FINAL_AGE}`,
+                fullChosen[years],
+                '',
+                true,
+                difference >= 0 ? 'Gain from Concentration' : 'Cost of Concentration',
+                difference,
+                ''
+            );
+
+            chartInstance.data.datasets[0].data = fullDiversified;
+            chartInstance.data.datasets[1].data = fullChosen;
         }
     }
 
