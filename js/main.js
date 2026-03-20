@@ -3,6 +3,19 @@ let currentFlow = null;
 let currentStep = null;
 let chartInstance = null;
 
+let selectedKid = {
+    name: 'Fionoa',
+    avatar: '🦊'
+};
+
+const kidAvatars = {
+    Fionoa: '🦊',
+    Dhruv: '🚀',
+    Kate: '🎨',
+    Taylor: '⚡',
+    Mehr: '🧠'
+};
+
 // Character Journey State (Alex)
 const charState = {
     pmt: 100,
@@ -17,6 +30,7 @@ const conceptState = {
     rate: 8,
     fee: 1.5,
     companies: 1, // number of companies in portfolio
+    companyOutcomePct: -100, // outcome of one company at shock year
     startAge: 20
 };
 
@@ -62,7 +76,8 @@ function updateScoreboard(visible, mainTitle='', mainValue=0, mainColor='text-gr
     document.getElementById('sb-title').innerText = mainTitle;
     const valEl = document.getElementById('sb-value');
     valEl.innerText = usd.format(mainValue);
-    valEl.className = `text-4xl md:text-5xl font-extrabold font-mono transition-colors duration-500 ${mainColor}`;
+    const mainAutoColor = mainValue > 0 ? 'text-green-400' : (mainValue < 0 ? 'text-red-400' : 'text-gray-300');
+    valEl.className = `text-4xl md:text-5xl font-extrabold font-mono transition-colors duration-500 ${mainAutoColor}`;
 
     // Comparison Value
     const compBox = document.getElementById('sb-compare');
@@ -72,11 +87,34 @@ function updateScoreboard(visible, mainTitle='', mainValue=0, mainColor='text-gr
         document.getElementById('sb-compare-title').innerText = compareTitle;
         const compEl = document.getElementById('sb-compare-value');
         compEl.innerText = usd.format(compareValue);
-        compEl.className = `text-2xl md:text-3xl font-bold font-mono transition-colors duration-500 ${compareColor}`;
+        const compareAutoColor = compareValue > 0 ? 'text-green-400' : (compareValue < 0 ? 'text-red-400' : 'text-gray-300');
+        compEl.className = `text-2xl md:text-3xl font-bold font-mono transition-colors duration-500 ${compareAutoColor}`;
     } else {
         compBox.classList.remove('opacity-100');
         compBox.classList.add('opacity-0', 'hidden');
     }
+}
+
+function setConceptOutcome(outcomePct, buttonEl = null) {
+    conceptState.companyOutcomePct = outcomePct;
+    if (buttonEl) {
+        document.querySelectorAll('.btn-outcome').forEach(el => el.classList.remove('selected', 'selected-red', 'selected-green'));
+        if (outcomePct >= 0) {
+            buttonEl.classList.add('selected-green');
+        } else {
+            buttonEl.classList.add('selected-red');
+        }
+    }
+
+    const impact = (conceptState.companyOutcomePct / conceptState.companies);
+    const sign = impact > 0 ? '+' : '';
+    const damageEl = document.getElementById('s4-damage-val');
+    if (damageEl) {
+        damageEl.innerText = sign + impact.toFixed(1).replace('.0', '') + '%';
+        damageEl.className = impact > 0 ? 'text-3xl font-extrabold text-green-600' : (impact < 0 ? 'text-3xl font-extrabold text-red-600' : 'text-3xl font-extrabold text-gray-600');
+    }
+
+    updateConceptChart();
 }
 
 // --- Initialization ---
@@ -104,23 +142,48 @@ function startFlow(flowType) {
     }
     
     if(flowType === 'character') {
-        document.getElementById('flow-title').innerText = "The Journey of Alex";
+        document.getElementById('flow-title').innerText = `The Journey of ${selectedKid.name}`;
+        const avatar = document.getElementById('flow-avatar');
+        if (avatar) {
+            avatar.classList.remove('hidden');
+            avatar.innerText = selectedKid.avatar;
+        }
         document.getElementById('flow-character').style.display = 'block';
         setupIntersectionObserver('flow-character');
         initChart();
         updateCharacterChart(); // Initial render
     } else if(flowType === 'concept') {
         document.getElementById('flow-title').innerText = "The Concept Sandbox";
+        const avatar = document.getElementById('flow-avatar');
+        if (avatar) avatar.classList.add('hidden');
         document.getElementById('flow-concept').style.display = 'block';
         setupIntersectionObserver('flow-concept');
         initChart(); // Start with timeseries
         updateConceptChart(); // Initial render
     } else if(flowType === 'handout') {
         document.getElementById('flow-title').innerText = "Printable Study Guide";
+        const avatar = document.getElementById('flow-avatar');
+        if (avatar) avatar.classList.add('hidden');
         if (handout) handout.style.display = 'block';
     }
     
     window.scrollTo(0,0);
+}
+
+function selectKid(name, buttonEl = null) {
+    selectedKid = {
+        name,
+        avatar: kidAvatars[name] || '🙂'
+    };
+
+    if (buttonEl) {
+        document.querySelectorAll('.kid-option').forEach(el => el.classList.remove('selected', 'selected-green', 'selected-red'));
+        buttonEl.classList.add('selected');
+    }
+
+    document.querySelectorAll('[data-char-name]').forEach(el => {
+        el.textContent = selectedKid.name;
+    });
 }
 
 // --- UI Interaction Handlers (Character) ---
@@ -166,8 +229,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if(s4Companies) s4Companies.addEventListener('input', (e) => { 
         conceptState.companies = parseInt(e.target.value); 
         document.getElementById('s4-companies-val').innerText = conceptState.companies + (conceptState.companies === 1 ? ' Company' : ' Companies'); 
-        const dmg = (1 / conceptState.companies) * 100;
-        document.getElementById('s4-damage-val').innerText = '-' + dmg.toFixed(1).replace('.0', '') + '%';
+        const impact = (conceptState.companyOutcomePct / conceptState.companies);
+        const sign = impact > 0 ? '+' : '';
+        document.getElementById('s4-damage-val').innerText = sign + impact.toFixed(1).replace('.0', '') + '%';
+        document.getElementById('s4-damage-val').className = impact > 0 ? 'text-3xl font-extrabold text-green-600' : (impact < 0 ? 'text-3xl font-extrabold text-red-600' : 'text-3xl font-extrabold text-gray-600');
         updateConceptChart(); 
     });
 });
@@ -474,9 +539,11 @@ function updateConceptChart() {
         const initialInvestment = 10000;
         const growthRate = 8;
         
-        // Calculate the drop based on the number of companies
-        // If 1 company, loss is 100%. If 100 companies, loss is 1%.
-        const damagePct = (1 / conceptState.companies);
+        // Calculate portfolio shock from one company outcome.
+        // Example: companyOutcomePct = -100 and companies=1 => total loss.
+        // Example: companyOutcomePct = +400 and companies=500 => tiny boost.
+        const weight = 1 / conceptState.companies;
+        const shockMultiplier = 1 + (conceptState.companyOutcomePct / 100) * weight;
 
         // Path without bankruptcy
         let dataBase = [];
@@ -492,7 +559,7 @@ function updateConceptChart() {
         for(let i=0; i<=years; i++) {
             if (i > 0) {
                 if (i === crashYear) {
-                    valCrash = valCrash * (1 - damagePct);
+                    valCrash = valCrash * shockMultiplier;
                 } else {
                     valCrash = valCrash * (1 + growthRate/100);
                 }
@@ -520,16 +587,18 @@ function updateConceptChart() {
             }
         ];
 
+        const outcomeLabel = conceptState.companyOutcomePct >= 0 ? `Year 10: One Company Jumps ${conceptState.companyOutcomePct}%` : `Year 10: One Company Falls ${Math.abs(conceptState.companyOutcomePct)}%`;
+
         chartInstance.options.plugins.annotation.annotations = {
             line1: {
-                type: 'line', xMin: `Year ${crashYear}`, xMax: `Year ${crashYear}`, borderColor: '#ef4444', borderWidth: 2, borderDash: [5,5],
-                label: { display: true, content: 'Year 10: One Company Fails ($0)', position: 'start' }
+                type: 'line', xMin: `Year ${crashYear}`, xMax: `Year ${crashYear}`, borderColor: conceptState.companyOutcomePct >= 0 ? '#22c55e' : '#ef4444', borderWidth: 2, borderDash: [5,5],
+                label: { display: true, content: outcomeLabel, position: 'start' }
             }
         };
 
         const difference = dataCrash[years] - dataBase[years];
-        updateScoreboard(true, `Wealth (Year 30)`, dataCrash[years], conceptState.companies === 1 ? 'text-red-500' : 'text-green-400',
-            conceptState.companies < 500, "Lost to Bankruptcy", difference, 'text-red-500');
+        updateScoreboard(true, `Wealth (Year 30)`, dataCrash[years], '',
+            true, difference >= 0 ? "Gain from Concentration" : "Cost of Concentration", difference, '');
 
         chartInstance.update();
     }
