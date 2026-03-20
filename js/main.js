@@ -611,10 +611,9 @@ function updateCharacterChart() {
         updateCharDiversificationReadout();
 
         const charShockPct = getCharShockPct();
-        const baselineShockPct = (charState.companyOutcomePct / 100) * (1 / 500);
 
         let dataChosen = calcCompoundPath(0, pmt, rate, fee, startAge, FINAL_AGE, crashAge, -charShockPct);
-        let dataDiversified = calcCompoundPath(0, pmt, rate, fee, startAge, FINAL_AGE, crashAge, -baselineShockPct);
+        let dataDiversified = calcCompoundPath(0, pmt, rate, fee, startAge, FINAL_AGE);
 
         if (currentStep === 'c4') {
             dataChosen = dataChosen.map((v, i) => i <= crashIndex ? v : null);
@@ -628,7 +627,7 @@ function updateCharacterChart() {
 
         chartInstance.data.datasets = [
             {
-                label: 'Diversified Baseline (500 companies)',
+                label: 'Diversified Baseline (smooth market path)',
                 data: dataDiversified,
                 borderColor: '#9ca3af',
                 borderDash: [5, 5],
@@ -690,7 +689,7 @@ function updateCharacterChart() {
             );
         } else {
             const fullChosen = calcCompoundPath(0, pmt, rate, fee, startAge, FINAL_AGE, crashAge, -charShockPct);
-            const fullDiversified = calcCompoundPath(0, pmt, rate, fee, startAge, FINAL_AGE, crashAge, -baselineShockPct);
+            const fullDiversified = calcCompoundPath(0, pmt, rate, fee, startAge, FINAL_AGE);
             const difference = fullChosen[years] - fullDiversified[years];
 
             updateScoreboard(
