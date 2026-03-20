@@ -36,17 +36,17 @@
             <div class="max-w-3xl mx-auto text-left bg-white/10 border border-brand-500/40 rounded-2xl p-5">
                 <p class="text-sm uppercase tracking-wide text-brand-100/80 mb-3">Pick the Story Hero</p>
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-                    <button class="choice-card kid-option selected" onclick="selectKid('Fionoa', this)"><span class="text-xl mr-1">🦊</span>Fionoa</button>
-                    <button class="choice-card kid-option" onclick="selectKid('Dhruv', this)"><span class="text-xl mr-1">🚀</span>Dhruv</button>
-                    <button class="choice-card kid-option" onclick="selectKid('Kate', this)"><span class="text-xl mr-1">🎨</span>Kate</button>
-                    <button class="choice-card kid-option" onclick="selectKid('Taylor', this)"><span class="text-xl mr-1">⚡</span>Taylor</button>
-                    <button class="choice-card kid-option" onclick="selectKid('Mehr', this)"><span class="text-xl mr-1">🧠</span>Mehr</button>
+                    <button class="choice-card kid-option text-gray-900" onclick="selectKid('Fionoa', this)"><span class="kid-avatar">🦊</span><span class="kid-name">Fionoa</span></button>
+                    <button class="choice-card kid-option text-gray-900" onclick="selectKid('Dhruv', this)"><span class="kid-avatar">🐯</span><span class="kid-name">Dhruv</span></button>
+                    <button class="choice-card kid-option text-gray-900" onclick="selectKid('Kate', this)"><span class="kid-avatar">🦉</span><span class="kid-name">Kate</span></button>
+                    <button class="choice-card kid-option text-gray-900" onclick="selectKid('Taylor', this)"><span class="kid-avatar">🐺</span><span class="kid-name">Taylor</span></button>
+                    <button class="choice-card kid-option text-gray-900" onclick="selectKid('Mehr', this)"><span class="kid-avatar">🐼</span><span class="kid-name">Mehr</span></button>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12 w-full mx-auto">
                 <button onclick="startFlow('character')" class="group relative bg-white bg-opacity-10 hover:bg-opacity-20 border border-brand-500 rounded-2xl p-8 text-left transition-all duration-300 transform hover:-translate-y-1">
-                    <h3 class="text-2xl font-bold mb-2">The Journey of Alex</h3>
+                    <h3 id="journey-card-title" class="text-2xl font-bold mb-2">The Journey of ???</h3>
                     <p class="text-brand-100 text-sm mb-4">Follow one person's life from age 15 to 65. Make interactive financial choices and watch the consequences compound over decades.</p>
                     <span class="inline-flex items-center text-brand-400 font-semibold group-hover:text-white transition-colors">Start the Story &rarr;</span>
                 </button>
@@ -75,7 +75,7 @@
                     <span class="font-semibold text-gray-900 text-sm">&larr; Back to Menu</span>
                 </div>
                 <div class="flex items-center gap-3">
-                    <div id="flow-avatar" class="hidden w-8 h-8 rounded-full bg-brand-100 text-brand-900 flex items-center justify-center text-lg">🦊</div>
+                    <div id="flow-avatar" class="hidden w-8 h-8 rounded-full bg-brand-100 text-brand-900 flex items-center justify-center text-lg">❓</div>
                     <div id="flow-title" class="font-bold text-lg text-brand-900">Flow Title</div>
                 </div>
             </div>
@@ -87,7 +87,7 @@
                     <div id="flow-character" class="hidden">
                         <div class="step" data-step="c1">
                             <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Chapter 1: The Engine Starts</h2>
-                            <p class="text-lg text-gray-700 mb-6">Meet <span data-char-name>Fionoa</span>. At 15, <span data-char-name>Fionoa</span> starts saving from a first job.</p>
+                            <p class="text-lg text-gray-700 mb-6">Meet <span data-char-name>???</span>. At 15, <span data-char-name>???</span> starts saving from a first job.</p>
                             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                                 <label class="block text-sm font-bold text-gray-900 mb-2">How much should Alex save per month?</label>
                                 <div class="flex items-center space-x-4 mb-2">
@@ -99,7 +99,7 @@
 
                         <div class="step" data-step="c2">
                             <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Chapter 2: Where to park the cash?</h2>
-                            <p class="text-lg text-gray-700 mb-6"><span data-char-name>Fionoa</span> now needs to choose where the money goes.</p>
+                            <p class="text-lg text-gray-700 mb-6"><span data-char-name>???</span> now needs to choose where the money goes.</p>
                             <div class="space-y-4">
                                 <div class="choice-card btn-asset selected-red" onclick="setCharInput('assetClass', 'none', this, 'btn-asset')">
                                     <h4 class="font-bold text-gray-900">No Investment (0%)</h4>
@@ -118,7 +118,7 @@
 
                         <div class="step" data-step="c3">
                             <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Chapter 3: The Fee Trap</h2>
-                            <p class="text-lg text-gray-700 mb-6"><span data-char-name>Fionoa</span> chooses between active management fees and low-cost indexing.</p>
+                            <p class="text-lg text-gray-700 mb-6"><span data-char-name>???</span> chooses between active management fees and low-cost indexing.</p>
                             <div class="space-y-4">
                                 <div class="choice-card btn-fee" onclick="setCharInput('fee', 1.5, this, 'btn-fee')">
                                     <h4 class="font-bold text-red-700">Active Manager (1.5%)</h4>
@@ -133,7 +133,7 @@
 
                         <div class="step" data-step="c4">
                             <h2 class="text-4xl font-extrabold text-gray-900 mb-4">Chapter 4: Diversification Choice</h2>
-                            <p class="text-lg text-gray-700 mb-6"><span data-char-name>Fionoa</span> decides how concentrated to be.</p>
+                            <p class="text-lg text-gray-700 mb-6"><span data-char-name>???</span> decides how concentrated to be.</p>
                             <div class="space-y-4">
                                 <div class="choice-card btn-port selected-green" onclick="setCharInput('portfolio', 'index', this, 'btn-port')">
                                     <h4 class="font-bold text-gray-900">100% Diversified Index</h4>

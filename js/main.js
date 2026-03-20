@@ -4,16 +4,16 @@ let currentStep = null;
 let chartInstance = null;
 
 let selectedKid = {
-    name: 'Fionoa',
-    avatar: '🦊'
+    name: '???',
+    avatar: '❓'
 };
 
 const kidAvatars = {
     Fionoa: '🦊',
-    Dhruv: '🚀',
-    Kate: '🎨',
-    Taylor: '⚡',
-    Mehr: '🧠'
+    Dhruv: '🐯',
+    Kate: '🦉',
+    Taylor: '🐺',
+    Mehr: '🐼'
 };
 
 // Character Journey State (Alex)
@@ -184,6 +184,11 @@ function selectKid(name, buttonEl = null) {
     document.querySelectorAll('[data-char-name]').forEach(el => {
         el.textContent = selectedKid.name;
     });
+
+    const cardTitle = document.getElementById('journey-card-title');
+    if (cardTitle) {
+        cardTitle.innerText = `The Journey of ${selectedKid.name}`;
+    }
 }
 
 // --- UI Interaction Handlers (Character) ---

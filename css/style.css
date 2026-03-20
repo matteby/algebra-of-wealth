@@ -89,6 +89,26 @@ input[type=range]::-webkit-slider-runnable-track {
     box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
 }
 
+.kid-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    min-height: 88px;
+}
+
+.kid-avatar {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.kid-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
 /* Study guide pages */
 .handout-page {
     background: white;
