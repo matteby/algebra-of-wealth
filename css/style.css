@@ -195,17 +195,17 @@ input[type=range]::-webkit-slider-runnable-track {
     }
 
     .handout-page {
-        page-break-after: always;
-        break-after: page;
+        page-break-after: auto;
+        break-after: auto;
         border: none;
         border-radius: 0;
         box-shadow: none;
         margin: 0;
-        padding: 0;
+        padding: 0 0 0.22in 0;
         min-height: auto !important;
         overflow: visible !important;
-        page-break-inside: avoid;
-        break-inside: avoid;
+        page-break-inside: auto;
+        break-inside: auto;
     }
 
     #flow-handout h3,
@@ -221,7 +221,7 @@ input[type=range]::-webkit-slider-runnable-track {
         widows: 3;
     }
 
-    #flow-handout .p-4.rounded-lg.border {
+    #flow-handout .handout-block {
         page-break-inside: avoid;
         break-inside: avoid;
     }
