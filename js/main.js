@@ -17,7 +17,7 @@ const setupState = {
 };
 
 const defaultKidAvatar = {
-    Fionoa: '🦊',
+    Fiona: '🦊',
     Dhruv: '🐯',
     Kate: '🦉',
     Taylor: '🐺',

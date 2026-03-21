@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Algebra of Wealth - Teacher Notes</title>
+  <style>
+    :root {
+      --ink: #111827;
+      --muted: #4b5563;
+      --accent: #0c4a6e;
+      --paper: #ffffff;
+      --line: #d1d5db;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #f3f4f6;
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.45;
+    }
+
+    .page {
+      max-width: 8.5in;
+      margin: 24px auto;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      padding: 0.6in 0.7in;
+    }
+
+    h1, h2, h3 {
+      line-height: 1.2;
+      margin: 0 0 10px;
+      color: var(--accent);
+    }
+
+    h1 { font-size: 1.7rem; }
+    h2 { font-size: 1.2rem; margin-top: 24px; }
+    h3 { font-size: 1.02rem; margin-top: 18px; }
+
+    p { margin: 0 0 10px; }
+    ul { margin: 6px 0 10px 20px; }
+    li { margin: 4px 0; }
+    hr { border: 0; border-top: 1px solid var(--line); margin: 20px 0; }
+
+    .meta {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 14px;
+    }
+
+    .label {
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .note {
+      border-left: 3px solid #93c5fd;
+      background: #f8fafc;
+      padding: 8px 10px;
+      margin: 10px 0;
+    }
+
+    .print-bar {
+      max-width: 8.5in;
+      margin: 16px auto 0;
+      display: flex;
+      justify-content: flex-end;
+      padding: 0 2px;
+    }
+
+    .print-btn {
+      border: 1px solid #9ca3af;
+      background: #fff;
+      color: #111827;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    @media print {
+      @page { size: Letter; margin: 0.5in; }
+      body { background: #fff; }
+      .print-bar { display: none; }
+      .page {
+        border: none;
+        margin: 0;
+        max-width: none;
+        padding: 0;
+      }
+      h2, h3 { break-after: avoid; }
+      ul, p, .note { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="print-bar">
+    <button class="print-btn" onclick="window.print()">Print Teacher Notes</button>
+  </div>
+
+  <main class="page">
+    <h1>The Algebra of Wealth: Instructor Guide</h1>
+    <p class="meta"><strong>Duration:</strong> 1.5 Hours | <strong>Target Audience:</strong> Advanced 8th Grade (10th-grade level)</p>
+
+    <h2>Core Objective</h2>
+    <p>Shift students' mental models from "working for money" to "making money work for them" using the frameworks and mathematics in Scott Galloway's <em>The Algebra of Wealth</em>.</p>
+
+    <hr>
+
+    <h2>Part 1: Diversification: The Capitalist's Handbook (45 Minutes)</h2>
+    <p><em>This section establishes macroeconomic reality. Before we learn how to invest, we need to understand the rules of the game.</em></p>
+
+    <h3>1.1 Capital vs. Labor</h3>
+    <p><span class="label">Core Concept:</span> Society rewards owners of assets (capital) more than sellers of time (labor). Labor is finite; capital can compound indefinitely.</p>
+    <p class="label">Discussion Points:</p>
+    <ul>
+      <li><span class="label">Hard limit of labor:</span> Salaried income is capped by time and human capacity.</li>
+      <li><span class="label">Scale of capital:</span> Invested money works continuously and compounds.</li>
+      <li><span class="label">Tax asymmetry:</span> Earned income is typically taxed more heavily than capital gains.</li>
+      <li><span class="label">Goal:</span> Convert labor surplus (savings) into capital.</li>
+    </ul>
+    <p><span class="label">Socratic Prompt:</span> "Who makes more money over time: the athlete or the team owner? If you only sell your time, what is your ceiling?"</p>
+
+    <h3>1.2 Inflation: The Silent Tax</h3>
+    <p><span class="label">Core Concept:</span> Holding cash long term is a guaranteed purchasing-power loss.</p>
+    <p class="label">Discussion Points:</p>
+    <ul>
+      <li><span class="label">Illusion of safety:</span> Cash feels safe but loses real value over time.</li>
+      <li><span class="label">Purchasing power:</span> With 3% inflation, money buys less each year.</li>
+      <li><span class="label">Hurdle rate:</span> Returns must beat inflation to build real wealth.</li>
+    </ul>
+    <p><span class="label">Socratic Prompt:</span> "If cash loses value every year, what must you do just to stay even?"</p>
+
+    <h3>1.3 Asset Classes and the Investing Spectrum</h3>
+    <p><span class="label">Core Concept:</span> Each asset class serves a different purpose in risk, return, and utility.</p>
+    <p class="label">Discussion Points:</p>
+    <ul>
+      <li><span class="label">Equities (stocks):</span> Ownership in companies; key long-run growth engine with short-run volatility.</li>
+      <li><span class="label">Fixed income (bonds):</span> Lending with lower returns and lower volatility; can stabilize portfolios.</li>
+      <li><span class="label">Real estate:</span> Leverage plus forced savings through mortgage payments can build equity.</li>
+    </ul>
+    <div class="note"><span class="label">Interactive Note:</span> Direct students to the printable handout or asset class content on the dashboard.</div>
+
+    <hr>
+
+    <h2>Part 2: Diversification: Basic Principles of Investing (45 Minutes)</h2>
+    <p><em>This section applies the math to portfolio construction, defense, and compounding mechanics.</em></p>
+
+    <h3>2.1 Risk and Return</h3>
+    <p><span class="label">Core Concept:</span> Higher expected return requires higher risk.</p>
+    <p class="label">Discussion Points:</p>
+    <ul>
+      <li><span class="label">Iron law:</span> "High return, low risk" claims are usually false or misunderstood.</li>
+      <li><span class="label">Volatility cost:</span> Market drawdowns are the price of long-run equity returns.</li>
+      <li><span class="label">Horizon match:</span> Use higher-risk assets only for money with long time horizons.</li>
+    </ul>
+    <p><span class="label">Socratic Prompt:</span> "What if you need money during a crash?"</p>
+
+    <h3>2.2 The Math of Loss (and Why Diversification Is Necessary)</h3>
+    <p><span class="label">Core Concept:</span> Losses are asymmetrical; large drawdowns destroy compounding power.</p>
+    <div class="note"><span class="label">Interactive Note:</span> Open the dashboard section on the mathematics of loss.</div>
+    <p class="label">Discussion Points:</p>
+    <ul>
+      <li><span class="label">Asymmetry:</span> A 50% loss requires a 100% gain to recover.</li>
+      <li><span class="label">Concentration risk:</span> Large single-position losses can make recovery mathematically difficult.</li>
+      <li><span class="label">Diversification:</span> Spreading risk across companies and assets reduces single-point failure.</li>
+    </ul>
+    <p><span class="label">Dashboard Activity:</span> Use loss slider values (20%, 50%, 80%) and call out required recovery gains.</p>
+
+    <h3>2.3 The Tyranny of Fees</h3>
+    <p><span class="label">Core Concept:</span> Small percentage fees compound into large long-term wealth loss.</p>
+    <div class="note"><span class="label">Interactive Note:</span> Use the 30-year wealth journey scenario.</div>
+    <p class="label">Discussion Points:</p>
+    <ul>
+      <li><span class="label">Active management illusion:</span> "Small" annual fees often hide huge lifetime cost.</li>
+      <li><span class="label">Compounding drag:</span> Fees reduce principal and future growth on that principal.</li>
+      <li><span class="label">Low-cost solution:</span> Prefer broad, passive, low-fee index funds.</li>
+    </ul>
+    <p><span class="label">Dashboard Activity:</span> Run $500/month, 8% return, and move fees from 0.5% to 2.5%.</p>
+
+    <h3>2.4 Time in the Market &gt; Timing the Market</h3>
+    <p><span class="label">Core Concept:</span> Consistent long-term investing usually beats attempts to predict short-term moves.</p>
+    <p class="label">Discussion Points:</p>
+    <ul>
+      <li><span class="label">Prediction limits:</span> No one reliably calls tops and bottoms.</li>
+      <li><span class="label">Best days problem:</span> Missing a few strong days can heavily damage long-run returns.</li>
+      <li><span class="label">Compounding curve:</span> Most visible growth occurs later, requiring patience and consistency.</li>
+    </ul>
+  </main>
+</body>
+</html>
